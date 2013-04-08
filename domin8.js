@@ -28,7 +28,7 @@ var matchesSelector = (function () {
 var elementify = function (obj) {
   if (typeof obj == 'function') obj = obj();
   if (isString(obj)) obj = document.createTextNode(obj);
-  if (isNaN(obj.nodeType)) throw new TypeError();
+  if (obj == null || isNaN(obj.nodeType)) throw new TypeError();
   return obj;
 };
 
@@ -47,7 +47,10 @@ var curry = function (fn, fnLength /*, args */) {
 // Flip the argument order of a function
 var flip = function (fn) {
   return function () {
-    return fn.apply(this, ArrayProto.reverse.call(arguments));
+    var args = slice.call(arguments);
+    if (fn.length > 0) args = args.splice(0, fn.length);
+    args = args.reverse();
+    return fn.apply(this, args);
   };
 };
 
@@ -83,10 +86,11 @@ D8.setText = D8.setProp('textContent');
 D8.getValue = D8.getProp('value');
 D8.setValue = D8.setProp('value');
 D8.getData = curry(function (key, elem) {
-  D8.getProp('datalist.' + key, elem);
+  return D8.getProp('datalist.' + key, elem);
 });
 D8.setData = curry(function (key, val, elem) {
   D8.setProp('datalist.' + key, val, elem);
+  return elem;
 });
 
 D8.addClass = curry(function (className, elem) {
@@ -108,40 +112,45 @@ D8.hasClass = curry(function (className, elem) {
 
 // Manipulation
 
-D8.after = curry(function (content, elem) {
+var after = function (content, elem) {
   content = elementify(content);
   elem.parentNode.insertBefore(content, elem.nextSibling); 
   return elem;
-});
-D8.insertAfter = flip(D8.after);
+};
+D8.after = curry(after);
+D8.insertAfter = curry(flip(after), 2);
 
-D8.before = curry(function (content, elem) {
+var before = function (content, elem) {
   content = elementify(content);
   elem.parentNode.insertBefore(content, elem); 
   return elem;
-});
-D8.insertBefore = flip(D8.before);
+};
+D8.before = curry(before);
+D8.insertBefore = curry(flip(before), 2);
 
-D8.prepend = curry(function (content, elem) {
+var prepend = curry(function (content, elem) {
   content = elementify(content);
   elem.insertBefore(content, elem.firstChild); 
   return elem;
 });
-D8.prependTo = flip(D8.prepend);
+D8.prepend = curry(prepend);
+D8.prependTo = curry(flip(prepend), 2);
 
-D8.append = curry(function (content, elem) {
+var append = function (content, elem) {
   content = elementify(content);
-  elem.appendChild(content, elem.nextSibling); 
+  elem.appendChild(content);
   return elem;
-});
-D8.appendTo = flip(D8.append);
+};
+D8.append = curry(append);
+D8.appendTo = curry(flip(append), 2);
 
-D8.replace = curry(function (oldElem, newContent) {
+var replace = function (oldElem, newContent) {
   newContent = elementify(newContent);
   oldElem.parentNode.replaceChild(oldElem, newContent);
   return oldElem;
-});
-D8.replaceWith = flip(D8.replace);
+};
+D8.replace = curry(replace);
+D8.replaceWith = curry(flip(replace), 2);
 
 D8.clone = curry(function (elem, shallow) {
   return elem.cloneNode(!shallow);
@@ -159,14 +168,19 @@ D8.matches = curry(function (sel, elem) {
 D8.has = curry(function (sel, elem) {
   return !!elem.querySelector(sel);
 });
-D8.contains = curry(function (child, parent) {
+
+var contains = function (child, parent) {
   return parent.contains(child);
-});
-D8.containedBy = flip(D8.contains);
-D8.find = curry(function (sel, elem) {
+};
+D8.contains = curry(contains);
+D8.containedBy = curry(flip(D8.contains), 2);
+
+var find = function (sel, elem) {
   return elem.querySelectorAll(sel);
-});
-D8.findIn = flip(D8.find);
+};
+D8.find = curry(find);
+D8.findIn = curry(flip(find), 2);
+
 D8.next = D8.getProp('nextElementSibling');
 D8.prev = D8.getProp('previousElementSibling');
 D8.parent = D8.getProp('parentNode');
@@ -210,7 +224,11 @@ D8.make = (function () {
   };
 
   var splitter = /(#|\.)/;
-  return function make (tag, props) {
+  return function make (tag, props, children) {
+    if (isArray(props)) {
+      children = props;
+      props = {};
+    }
     props || (props = {});
     if (isString(tag) && splitter.test(tag)) {
       var parts = tag.split(splitter);
@@ -224,6 +242,7 @@ D8.make = (function () {
     tag || (tag = 'div');
     var elem = isElement(tag) ? tag : document.createElement(tag);
     for (var prop in props) setProp(elem, prop, props[prop]);
+    if (isArray(children)) children.forEach(D8.appendTo(elem));
     return elem;
   };
 })();
@@ -237,6 +256,7 @@ D8.getStyle = curry(function (prop, elem) {
 });
 D8.setStyle = curry(function (prop, val, elem) {
   D8.setProp('style.' + prop, val, elem);
+  return elem;
 });
 D8.hide = D8.setStyle('display', 'none');
 D8.show = D8.setStyle('display', 'block');

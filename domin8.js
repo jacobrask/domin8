@@ -63,7 +63,7 @@ D8.getProp = curry(function (prop, obj) {
   return obj[prop[0]];
 });
 D8.setAttr = curry(function (attr, val, elem) {
-  elem.setAttribute(attr, val);
+  elem.setAttribute(attr, "" + val);
   return elem;
 });
 D8.setProp = curry(function (prop, val, obj) {
@@ -189,9 +189,29 @@ D8.parentsOf = curry(function (elem, sel) {
 // Element creation
 
 D8.make = (function () {
+  var directProps = {
+    'class': 'className', className: 'className',
+    defaultValue: 'defaultValue',
+    'for': 'htmlFor',
+    html: 'innerHTML', innerHTML: 'innerHTML',
+    id: 'id',
+    name: 'name',
+    src: 'src',
+    text: 'textContent', textContent: 'textContent',
+    title: 'title',
+    value: 'value'
+  };
+  var boolProps = [ 'checked', 'defaultChecked', 'disabled', 'hidden', 'multiple', 'selected' ];
+  var setProp = function (elem, key, val) {
+    var prop = directProps[key];
+    if (prop) D8.setProp(prop, val, elem);
+    else if (boolProps.indexOf(key) > -1) D8.setProp(key, !!val, elem);
+    else D8.setAttr(key, val, elem);
+  };
+
   var splitter = /(#|\.)/;
-  return function make (tag) {
-    var props = {};
+  return function make (tag, props) {
+    props || (props = {});
     if (isString(tag) && splitter.test(tag)) {
       var parts = tag.split(splitter);
       tag = parts[0];
@@ -203,9 +223,7 @@ D8.make = (function () {
     }
     tag || (tag = 'div');
     var elem = isElement(tag) ? tag : document.createElement(tag);
-    for (var prop in props) {
-      elem[prop] = props[prop];
-    }
+    for (var prop in props) setProp(elem, prop, props[prop]);
     return elem;
   };
 })();

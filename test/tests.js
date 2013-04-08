@@ -92,6 +92,10 @@ test("Element creation", function () {
   elem = D8.make('div.bar.baz#foo');
   equal(elem.id, 'foo', "Id and class name");
   equal(elem.className, 'bar baz', "Id and class name");
+  elem = D8.make('p', { hidden: true, foobar: 'barfoo', title: "BAR" });
+  equal(elem.title, "BAR", "Property");
+  equal(elem.hidden, true, "Boolean property");
+  equal(elem.getAttribute('foobar'), 'barfoo', "Attribute");
 });
 
 test("Style", function () {

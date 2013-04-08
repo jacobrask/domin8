@@ -153,10 +153,12 @@ Return parents of `elem`, optionally matching `selector`.
 
 ## Element creation
 
-### `D8.make(tag)`
+### `D8.make(tag, props)`
 
-Create element. `tag` is a string with an optional ID and class names:
-`tagname#id.class1.class2`
+Create element.
+
+`tag` is a string with an optional ID and class names: `tagname#id.class1.class2`
+`props` is an object with properties and attributes to set on the new element.
 
 
 ## Style

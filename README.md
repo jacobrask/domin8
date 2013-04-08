@@ -8,9 +8,9 @@ and partial application.
 Domin8's functions are more suitable for this, and also work very well
 together with iteration functions such as `forEach`, `map` and `reduce`.
 
-All functions are curried, which means that if they are called without all
-required arguments, they return a new function accepting the remaining
-arguments.
+All functions are curried (or partially applied), which means that if they are
+called without all required arguments, they return a new function accepting
+the remaining arguments.
 
 This lets you do things like:
 
@@ -29,7 +29,7 @@ deactivate(elem);
 
 ## Attributes and properties
 
-### `D8.getAttr(attr, elem)`*
+### `D8.getAttr(attr, elem)`
 
 ### `D8.setAttr(attr, val, elem)`
 
@@ -57,7 +57,7 @@ Property assignment can be nested: `D8.setProp('dataset.foo', 'bar')`
 
 ### `D8.getData(key, elem)`
 
-### `D8.setData(key, val, elem)`
+### `D8.setData(key, data, elem)`
 
 ### `D8.addClass(className, elem)`
 
@@ -155,9 +155,9 @@ Return parents of `elem`, optionally matching `selector`.
 
 ### `D8.make(tag, props, children)`
 
-`tag` is a string with an optional ID and class names: `tagname#id.class1.class2`
-`props` is an object with properties and attributes to set on the new element.
-`children` is an array of DOM nodes or text strings to append to the new element.
+ * `tag` is a string with an optional ID and class names: `tagname#id.class1.class2`
+ * `props` is an object with properties and attributes to set on the new element.
+ * `children` is an array of DOM nodes or text strings to append to the new element.
 
 
 ## Style

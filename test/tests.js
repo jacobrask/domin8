@@ -82,6 +82,18 @@ test("Traversal", function () {
   equal(D8.parentsOf(child, '#test-traverse')[0], elem, "Parents of - filtered");
 });
 
+test("Element creation", function () {
+  equal(D8.make('b').tagName, 'B', "Create element");
+  equal(D8.make('div.foo').className, 'foo', "Class name");
+  equal(D8.make('#foo').id, 'foo', "Id");
+  var elem = D8.make('div#foo.bar');
+  equal(elem.id, 'foo', "Id and class name");
+  equal(elem.className, 'bar', "Id and class name");
+  elem = D8.make('div.bar.baz#foo');
+  equal(elem.id, 'foo', "Id and class name");
+  equal(elem.className, 'bar baz', "Id and class name");
+});
+
 test("Style", function () {
   var elem = document.getElementById('test-style');
   equal(D8.getStyle('width', elem), '100px', "Get style");

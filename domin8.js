@@ -11,6 +11,9 @@ var D8 = window.D8 = {};
 
 var ArrayProto = Array.prototype;
 var slice = ArrayProto.slice;
+var isArray = Array.isArray;
+var isString = function (obj) { return obj && typeof obj == 'string'; };
+var isElement = function (obj) { return obj && obj.nodeType === 1; };
 
 var matchesSelector = (function () {
   var props = [ 'matches', 'webkitMatchesSelector', 'mozMatchesSelector',
@@ -24,7 +27,7 @@ var matchesSelector = (function () {
 // Accept an element, a function or a string and return an HTML Node
 var elementify = function (obj) {
   if (typeof obj == 'function') obj = obj();
-  if (typeof obj == 'string') obj = document.createTextNode(obj);
+  if (isString(obj)) obj = document.createTextNode(obj);
   if (isNaN(obj.nodeType)) throw new TypeError();
   return obj;
 };
@@ -180,6 +183,33 @@ D8.parentsOf = curry(function (elem, sel) {
   }
   return parents;
 }, 1);
+
+
+
+// Element creation
+
+D8.make = (function () {
+  var splitter = /(#|\.)/;
+  return function make (tag) {
+    var props = {};
+    if (isString(tag) && splitter.test(tag)) {
+      var parts = tag.split(splitter);
+      tag = parts[0];
+      for (var i = 1, j = 2, name; j < parts.length; i += 2, j += 2) {
+        name = parts[j];
+        if (parts[i] === '#') props.id = name;
+        else props.className = props.className ? props.className + ' ' + name : name;
+      }
+    }
+    tag || (tag = 'div');
+    var elem = isElement(tag) ? tag : document.createElement(tag);
+    for (var prop in props) {
+      elem[prop] = props[prop];
+    }
+    return elem;
+  };
+})();
+
 
 
 // Style

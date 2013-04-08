@@ -151,6 +151,14 @@ Return immediate children of `elem`, optionally matching `selector`.
 Return parents of `elem`, optionally matching `selector`.
 
 
+## Element creation
+
+### `D8.make(tag)`
+
+Create element. `tag` is a string with an optional ID and class names:
+`tagname#id.class1.class2`
+
+
 ## Style
 
 ### `D8.getStyle(prop, elem)`

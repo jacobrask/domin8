@@ -11,8 +11,17 @@ var D8 = window.D8 = {};
 
 var ArrayProto = Array.prototype;
 var slice = ArrayProto.slice;
-var slice = ArrayProto.slice;
 
+var matchesSelector = (function () {
+  var props = [ 'matches', 'webkitMatchesSelector', 'mozMatchesSelector',
+                'msMatchesSelector', 'oMatchesSelector' ];
+  for (var i = 0; i < props.length; i++) {
+    if (HTMLElement.prototype[props[i]]) return props[i];
+  }
+})();
+
+
+// Accept an element, a function or a string and return an HTML Node
 var elementify = function (obj) {
   if (typeof obj == 'function') obj = obj();
   if (typeof obj == 'string') obj = document.createTextNode(obj);
@@ -20,6 +29,7 @@ var elementify = function (obj) {
   return obj;
 };
 
+// Returns new functions until all arguments (fn.length or fnLength) are filled
 var curry = function (fn, fnLength /*, args */) {
   var origArgs = slice.call(arguments, 2);
   fnLength || (fnLength = fn.length);
@@ -31,6 +41,7 @@ var curry = function (fn, fnLength /*, args */) {
   };
 };
 
+// Flip the argument order of a function
 var flip = function (fn) {
   return function () {
     return fn.apply(this, ArrayProto.reverse.call(arguments));
@@ -122,19 +133,53 @@ D8.append = curry(function (content, elem) {
 });
 D8.appendTo = flip(D8.append);
 
-D8.clone = curry(function (elem) {
-  return elem.cloneNode(deep);
-  return this;
+D8.replace = curry(function (oldElem, newContent) {
+  newContent = elementify(newContent);
+  oldElem.parentNode.replaceChild(oldElem, newContent);
+  return oldElem;
 });
+D8.replaceWith = flip(D8.replace);
+
+D8.clone = curry(function (elem, shallow) {
+  return elem.cloneNode(!shallow);
+}, 1);
 D8.remove = curry(function (elem) {
   return elem.parentNode.removeChild(elem);
 });
-D8.wrap = curry(function (wrapper, elem) {
-  elem.parentNode.insertBefore(wrapper, elem);
-  elem.parentNode.removeChild(elem);
-  wrapper.appendChild(elem);
-  return this;
+
+
+// Traversal
+
+D8.matches = curry(function (sel, elem) {
+  return elem[matchesSelector](sel);
 });
+D8.has = curry(function (sel, elem) {
+  return !!elem.querySelector(sel);
+});
+D8.contains = curry(function (child, parent) {
+  return parent.contains(child);
+});
+D8.containedBy = flip(D8.contains);
+D8.find = curry(function (sel, elem) {
+  return elem.querySelectorAll(sel);
+});
+D8.findIn = flip(D8.find);
+D8.next = D8.getProp('nextElementSibling');
+D8.prev = D8.getProp('previousElementSibling');
+D8.parent = D8.getProp('parentNode');
+D8.childrenOf = curry(function (elem, sel) {
+  if (sel == null) return elem.children;
+  return slice.call(elem.children).filter(D8.matches(sel));
+}, 1);
+D8.parentsOf = curry(function (elem, sel) {
+  var parents = [], parent;
+  while (elem = elem.parentNode) {
+    if (sel == null || (elem[matchesSelector] && elem[matchesSelector](sel))) {
+      parents[parents.length] = elem;
+    }
+  }
+  return parents;
+}, 1);
 
 
 // Style
@@ -145,5 +190,7 @@ D8.getStyle = curry(function (prop, elem) {
 D8.setStyle = curry(function (prop, val, elem) {
   D8.setProp('style.' + prop, val, elem);
 });
+D8.hide = D8.setStyle('display', 'none');
+D8.show = D8.setStyle('display', 'block');
 
 })();

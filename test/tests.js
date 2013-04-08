@@ -1,5 +1,11 @@
 var fixEl = document.getElementById('qunit-fixture');
 
+test("Currying", function () {
+  equal(typeof D8.getAttr('foo'), 'function', "Return partially applied function");
+  var children = D8.childrenOf(fixEl);
+  ok(children instanceof HTMLCollection, "Don't curry if missing optional arguments");
+});
+
 test("Attributes and properties", function () {
   var elem = document.getElementById('test-attr');
   equal(D8.getAttr('foo', elem), 'bar', "Get attribute");
@@ -39,7 +45,7 @@ test("Manipulation", function () {
   D8.before('Bar', elem);
   equal(elem.previousSibling.textContent, 'Bar', "Insert text before");
   D8.insertBefore(elem, 'Bar');
-  equal(elem.previousSibling.textContent, 'Bar', "Before element, insert before");
+  equal(elem.previousSibling.textContent, 'Bar', "Before element, insert");
 
   D8.append(document.createElement('strong'), elem);
   equal(elem.lastChild.tagName, 'STRONG', "Append to element");
@@ -51,7 +57,34 @@ test("Manipulation", function () {
   D8.prependTo(elem, 'BARFOO');
   equal(elem.firstChild.textContent, 'BARFOO', "To element, prepend");
 
-  D8.wrap(document.createElement('section'), elem);
-  equal(elem.parentNode.tagName, 'SECTION', "Wrap element in element");
+  equal(D8.clone(elem).id, 'test-manip', "Clone node");
 
+  D8.remove(elem);
+  equal(elem.parentNode, null, "Remove element from DOM");
+});
+
+test("Traversal", function () {
+  var elem = document.getElementById('test-traverse');
+  var child = elem.getElementsByTagName('strong')[0];
+  ok(D8.matches('#test-traverse', elem), "Matches selector");
+  ok(D8.has('strong', elem), "Has child matching selector");
+  equal(D8.find('strong', elem)[0], elem.children[0], "Find");
+
+  equal(D8.next(elem.getElementsByTagName('i')[0]).tagName, 'SPAN', "Next sibling");
+  equal(D8.prev(elem.getElementsByTagName('span')[0]).tagName, 'I', "Previous sibling");
+
+  equal(D8.childrenOf(elem)[0], elem.children[0], "Children of");
+  equal(D8.childrenOf(elem, 'strong')[0], elem.children[0], "Children of - filtered");
+
+  equal(D8.parent(elem), elem.parentNode, "Parent");
+
+  equal(D8.parentsOf(child)[0], elem, "Parents of");
+  equal(D8.parentsOf(child, '#test-traverse')[0], elem, "Parents of - filtered");
+});
+
+test("Style", function () {
+  var elem = document.getElementById('test-style');
+  equal(D8.getStyle('width', elem), '100px', "Get style");
+  D8.setStyle('width', '200px', elem);
+  equal(D8.getStyle('width', elem), '200px', "Set style");
 });

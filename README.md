@@ -29,19 +29,25 @@ deactivate(elem);
 
 ## Attributes and properties
 
+### `D8.get(prop, elem)`
+
+Returns the property value for known element properties, otherwise the attribute.
+Property access can be nested: `D8.get('style.background')`
+
+### `D8.set(prop, val, elem)`
+
+Returns the property value for known element properties, otherwise the attribute.
+Property assignment can be nested: `D8.set('style.background')`
+
 ### `D8.getAttr(attr, elem)`
 
 ### `D8.setAttr(attr, val, elem)`
 
+### `D8.removeAttr(attr)`
+
 ### `D8.getProp(prop, obj)`
 
-Property access can be nested: `D8.getProp('style.background')`
-
 ### `D8.setProp(prop, val, obj)`
-
-Property assignment can be nested: `D8.setProp('dataset.foo', 'bar')`
-
-### `D8.removeAttr(attr)`
 
 ### `D8.getHtml(elem)`
 

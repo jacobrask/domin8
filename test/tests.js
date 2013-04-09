@@ -1,5 +1,6 @@
 var fixEl = document.getElementById('qunit-fixture');
 
+/*
 test("Currying", function () {
   var elem = document.getElementById('test-attr');
   equal(typeof D8.getAttr('foo'), 'function', "Return partially applied function");
@@ -7,31 +8,7 @@ test("Currying", function () {
   var children = D8.childrenOf(fixEl);
   ok(children instanceof HTMLCollection, "Don't curry if missing optional arguments");
 });
-
-test("Attributes and properties", function () {
-  var elem = document.getElementById('test-attr');
-  equal(D8.getAttr('foo', elem), 'bar', "Get attribute");
-  equal(D8.getProp('id', elem), 'test-attr', "Get property");
-  D8.setAttr('bar', 'foo', elem);
-  equal(D8.getAttr('bar', elem), 'foo', "Set attribute");
-  D8.setProp('id', 'test-bar-foo', elem);
-  equal(D8.getProp('id', elem), 'test-bar-foo', "Set property");
-  D8.setProp('style.color', 'red', elem);
-  equal(D8.getProp('style.color', elem), 'red', "Set nested property");
-  D8.removeAttr('bar', elem);
-  equal(D8.getAttr('bar', elem), null, "Remove attribute");
-
-  equal(D8.getText(elem), 'Text html', "Get text");
-  equal(D8.getHtml(elem), 'Text <b>html</b>', "Get HTML");
-
-  D8.setText('<script>alert()</script>', elem);
-  equal(D8.getHtml(elem), '&lt;script&gt;alert()&lt;/script&gt;', "Set text");
-
-  D8.setHtml('<b>HTML</b>', elem);
-  equal(D8.getHtml(elem), '<b>HTML</b>', "Set HTML");
-
-});
-
+*/
 test("Manipulation", function () {
   var elem = document.getElementById('test-manip');
   D8.after('Foo', elem);

@@ -63,28 +63,96 @@ var toDashCase = function (str) {
 // Properties and attributes
 // =========================
 
-D8.getAttr = curry(function (attr, elem) {
-  return elem.getAttribute(attr);
+(function () {
+
+// Properties that should be set directly and not as attributes.
+// Also used as map for case insensitive property names and for aliases
+// Some of these can probably be removed and fall back to attributes
+var propFix = "acceptCharset,accessKey,attributes,autocomplete,autofocus,autoplay,buffered,cellIndex,cellPadding,cellSpacing,cells,challenge,checked,childElementCount,childNodes,children,classList,className,clear,clientHeight,clientLeft,clientTop,clientWidth,colSpan,cols,compact,complete,content,contentDocument,contentEditable,contentWindow,control,controller,controls,coords,crossOrigin,currentSrc,currentTime,data,dataset,dateTime,declare,default,defaultChecked,defaultMuted,defaultPlaybackRate,defaultSelected,defaultValue,dirName,disabled,download,draggable,duration,elements,encoding,enctype,ended,error,event,files,firstChild,firstElementChild,form,formAction,formEnctype,formMethod,formNoValidate,formTarget,frame,frameBorder,hash,headers,height,hidden,high,host,hostname,htmlFor,httpEquiv,incremental,indeterminate,index,initialTime,innerHTML,innerText,isContentEditable,isMap,keytype,kind,label,labels,lastChild,lastElementChild,length,link,list,localName,longDesc,loop,low,max,maxLength,media,mediaGroup,multiple,muted,namespaceURI,naturalHeight,naturalWidth,networkState,nextElementSibling,nextSibling,noHref,noShade,noValidate,noWrap,nodeName,nodeType,nodeValue,nonce,offsetHeight,offsetLeft,offsetParent,offsetTop,offsetWidth,open,optimum,options,origin,outerHTML,outerText,ownerDocument,parentElement,parentNode,pathname,paused,ping,playbackRate,played,port,position,poster,prefix,preload,previousElementSibling,previousSibling,profile,protocol,readOnly,readyState,required,reversed,rowIndex,rowSpan,rows,rules,sandbox,scheme,scope,scrollHeight,scrollLeft,scrollTop,scrollWidth,scrolling,seamless,search,sectionRowIndex,seekable,seeking,selected,selectedIndex,selectedOptions,selectionDirection,selectionEnd,selectionStart,shape,sheet,size,sizes,span,standby,start,startTime,step,style,summary,tabIndex,tagName,text,textContent,textLength,textTracks,track,translate,type,useMap,validationMessage,validity,value,valueAsDate,valueAsNumber,valueType,version,videoHeight,videoWidth,volume,width,willValidate,wrap,x,y"
+  .split(',').reduce(function (map, key) {
+    map[key.toLowerCase()] = key;
+    return map;
+  }, {});
+
+// Aliases for common shorthands/mistakes
+var aliasedProps = {
+  'class': 'className', 'for': 'htmlFor', 'html': 'innerHTML', 'text': 'textContent' };
+for (var key in aliasedProps) {
+  propFix[key] = aliasedProps[key];
+}
+
+function attrOrProp (obj, name, val) {
+  if ((/\./).test(name)) return prop(obj, name, val);
+  var direct = propFix[name.toLowerCase()];
+  if (direct) return prop(obj, direct, val, true);
+  else return attr(obj, name, val);
+};
+
+D8.get = curry(function (name, elem) {
+  return attrOrProp(elem, name);
 });
-D8.getProp = curry(function (prop, obj) {
-  prop = prop.split('.');
-  while (prop.length > 1) obj = obj[prop.shift()];
-  return obj[prop[0]];
+D8.set = curry(function (name, val, elem) {
+  return attrOrProp(elem, name, val);
 });
-D8.setAttr = curry(function (attr, val, elem) {
-  elem.setAttribute(attr, "" + val);
+
+
+
+// Attributes
+// ----------
+
+function attr (elem, name, val) {
+  if (name == null || !isElement(elem)) return;
+  name = name.toLowerCase();
+  if (typeof val === 'undefined') {
+    return elem.getAttribute(name);
+  }
+  if (val === false || val === null) {
+    elem.removeAttribute(name);
+  } else {
+    elem.setAttribute(name, val + "");
+  }
   return elem;
+};
+D8.getAttr = curry(function (name, elem) {
+  return attr(elem, name);
 });
-D8.setProp = curry(function (prop, val, obj) {
-  prop = prop.split('.');
-  while (obj && prop.length > 1) obj = obj[prop.shift()];
-  obj[prop[0]] = val;
+D8.removeAttr = curry(function (name, elem) {
+  return attr(elem, name, false);
+});
+D8.setAttr = curry(function (name, val, elem) {
+  return attr(elem, name, val);
+});
+
+
+// Properties
+// ----------
+
+function prop (obj, name, val, isNormalized) {
+  if (obj == null || name == null) return;
+
+  // Nested property access/assignment with .
+  name = name.split('.');
+  while (name.length > 1) obj = prop(obj, name.shift());
+
+  name = name[0];
+  if (!isNormalized) name = propFix[name.toLowerCase()] || name;
+
+  // Get
+  if (typeof val === 'undefined') {
+    return obj[name];
+  }
+  // Set
+  obj[name] = val;
   return obj;
+};
+
+D8.getProp = curry(function (name, obj) {
+  return prop(obj, name);
 });
-D8.removeAttr = curry(function (attr, elem) {
-  elem.removeAttribute(attr);
-  return elem;
+D8.setProp = curry(function (name, val, obj) {
+  return prop(obj, name, val);
 });
+
 D8.getHtml = D8.getProp('innerHTML');
 D8.setHtml = D8.setProp('innerHTML');
 D8.getText = D8.getProp('textContent');
@@ -122,6 +190,8 @@ D8.toggleClass = curry(function (className, elem) {
 D8.hasClass = curry(function (className, elem) {
   return elem.classList.contains(className);
 });
+
+})();
 
 
 // Manipulation
@@ -216,50 +286,27 @@ D8.parentsOf = curry(function (elem, sel) {
 
 // Element creation
 
-D8.make = (function () {
-  var directProps = {
-    'class': 'className', className: 'className',
-    defaultValue: 'defaultValue',
-    'for': 'htmlFor',
-    html: 'innerHTML', innerHTML: 'innerHTML',
-    id: 'id',
-    name: 'name',
-    src: 'src',
-    text: 'textContent', textContent: 'textContent',
-    title: 'title',
-    value: 'value'
-  };
-  var boolProps = [ 'checked', 'defaultChecked', 'disabled', 'hidden', 'multiple', 'selected' ];
-  var setProp = function (elem, key, val) {
-    var prop = directProps[key];
-    if (prop) D8.setProp(prop, val, elem);
-    else if (boolProps.indexOf(key) > -1) D8.setProp(key, !!val, elem);
-    else D8.setAttr(key, val, elem);
-  };
-
-  var splitter = /(#|\.)/;
-  return function make (tag, props, children) {
-    if (isArray(props)) {
-      children = props;
-      props = {};
+D8.make = function (tag, props, children) {
+  if (isArray(props)) {
+    children = props;
+    props = {};
+  }
+  props || (props = {});
+  if (isString(tag) && (/(#|\.)/).test(tag)) {
+    var parts = tag.split(/(#|\.)/);
+    tag = parts[0];
+    for (var i = 1, j = 2, name; j < parts.length; i += 2, j += 2) {
+      name = parts[j];
+      if (parts[i] === '#') props.id = name;
+      else props.className = props.className ? props.className + ' ' + name : name;
     }
-    props || (props = {});
-    if (isString(tag) && splitter.test(tag)) {
-      var parts = tag.split(splitter);
-      tag = parts[0];
-      for (var i = 1, j = 2, name; j < parts.length; i += 2, j += 2) {
-        name = parts[j];
-        if (parts[i] === '#') props.id = name;
-        else props.className = props.className ? props.className + ' ' + name : name;
-      }
-    }
-    tag || (tag = 'div');
-    var elem = isElement(tag) ? tag : document.createElement(tag);
-    for (var prop in props) setProp(elem, prop, props[prop]);
-    if (isArray(children)) children.forEach(D8.appendTo(elem));
-    return elem;
-  };
-})();
+  }
+  tag || (tag = 'div');
+  var elem = isElement(tag) ? tag : document.createElement(tag);
+  for (var prop in props) D8.set(prop, props[prop], elem);
+  if (isArray(children)) children.forEach(D8.appendTo(elem));
+  return elem;
+};
 
 
 

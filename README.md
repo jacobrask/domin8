@@ -1,4 +1,4 @@
-# Domin8 JavaScript DOM manipulation library
+# DOMin8 JavaScript DOM manipulation library
 
 Both the native DOM APIs and most libraries such as jQuery use an
 Object Oriented style which make them inconvenient to use together with

@@ -1,13 +1,13 @@
-/* domin8.js 0.0.1
+/* domin8.js 0.0.2
    (c) 2013 Jacob Rask
-   domin8 may be freely distributed under the MIT license. */
+   DOMin8 may be freely distributed under the MIT license. */
 
 (function () {
 
 var D8 = window.D8 = {};
 
-
 // Internal helpers
+// ================
 
 var ArrayProto = Array.prototype;
 var slice = ArrayProto.slice;
@@ -22,7 +22,6 @@ var matchesSelector = (function () {
     if (HTMLElement.prototype[props[i]]) return props[i];
   }
 })();
-
 
 // Accept an element, a function or a string and return an HTML Node
 var elementify = function (obj) {
@@ -54,8 +53,15 @@ var flip = function (fn) {
   };
 };
 
+var toDashCase = function (str) {
+  return str.replace(/([A-Z])/g, function (letter) {
+    return '-' + letter.toLowerCase();
+  });
+};
 
-// Attribute and properties
+
+// Properties and attributes
+// =========================
 
 D8.getAttr = curry(function (attr, elem) {
   return elem.getAttribute(attr);
@@ -86,10 +92,18 @@ D8.setText = D8.setProp('textContent');
 D8.getValue = D8.getProp('value');
 D8.setValue = D8.setProp('value');
 D8.getData = curry(function (key, elem) {
-  return D8.getProp('datalist.' + key, elem);
+  if (elem.datalist) {
+    return D8.getProp('datalist.' + key, elem);
+  } else {
+    return D8.getAttr('data-' + toDashCase(key), elem);
+  }
 });
 D8.setData = curry(function (key, val, elem) {
-  D8.setProp('datalist.' + key, val, elem);
+  if (elem.datalist) {
+    D8.setProp('datalist.' + key, val, elem);
+  } else {
+    D8.setAttr('data-' + key, toDashCase(val), elem);
+  }
   return elem;
 });
 
@@ -189,7 +203,7 @@ D8.childrenOf = curry(function (elem, sel) {
   return slice.call(elem.children).filter(D8.matches(sel));
 }, 1);
 D8.parentsOf = curry(function (elem, sel) {
-  var parents = [], parent;
+  var parents = [];
   while (elem = elem.parentNode) {
     if (sel == null || (elem[matchesSelector] && elem[matchesSelector](sel))) {
       parents[parents.length] = elem;

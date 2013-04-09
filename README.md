@@ -8,9 +8,9 @@ and partial application.
 Domin8's functions are more suitable for this, and also work very well
 together with iteration functions such as `forEach`, `map` and `reduce`.
 
-All functions are curried (or partially applied), which means that if they are
-called without all required arguments, they return a new function accepting
-the remaining arguments.
+All functions are curried (or "automatically partially applied" if you wish),
+which means that if they are called without all required arguments, they
+return a new function accepting the remaining arguments.
 
 This lets you do things like:
 
@@ -24,6 +24,9 @@ var deactive = compose(removeHighlight, D8.setText("Inactive"));
 deactivate(elem);
 
 ```
+
+Domin8 is currently not tested in many browsers, but the goal is compatibility
+with the two latest versions of major browsers.
 
 # API
 
@@ -141,6 +144,20 @@ Does `elem` have a child matching `selector`?
 Return all `elem`'s children matching `selector`.
 
 ### `D8.findIn(elem, selector)`
+
+### `D8.findOne(selector, elem)`
+
+Return the first child of `elem`  matching `selector`.
+
+### `D8.findOneIn(elem, selector)`
+
+### `D8.findByTag(tagName, elem)`
+
+### `D8.findByTagIn(tagName, elem)`
+
+### `D8.findByClass(className, elem)`
+
+### `D8.findByClassIn(className, elem)`
 
 ### `D8.next(elem)`
 

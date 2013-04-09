@@ -265,6 +265,25 @@ var find = function (sel, elem) {
 D8.find = curry(find);
 D8.findIn = curry(flip(find), 2);
 
+var findOne = function (sel, elem) {
+  return elem.querySelector(sel);
+};
+D8.findOne = curry(findOne);
+D8.findOneIn = curry(flip(findOne), 2);
+
+var findByTag = function (tag, elem) {
+  return elem.getElementsByTagName(tag);
+};
+D8.findByTag = curry(findByTag);
+D8.findByTagIn = curry(flip(findByTag), 2);
+
+var findByClass = function (className, elem) {
+  return elem.getElementsByClassName(className);
+};
+D8.findByClass = curry(findByClass);
+D8.findByClassIn = curry(flip(findByClass), 2);
+
+
 D8.next = D8.getProp('nextElementSibling');
 D8.prev = D8.getProp('previousElementSibling');
 D8.parent = D8.getProp('parentNode');

@@ -130,12 +130,14 @@ D8.setAttr = curry(function (name, val, elem) {
 function prop (obj, name, val, isNormalized) {
   if (obj == null || name == null) return;
 
-  // Nested property access/assignment with .
-  name = name.split('.');
-  while (name.length > 1) obj = prop(obj, name.shift());
+  if (!isNormalized) {
+    // Nested property access/assignment with .
+    name = name.split('.');
+    while (name.length > 1) obj = prop(obj, name.shift());
 
-  name = name[0];
-  if (!isNormalized) name = propFix[name.toLowerCase()] || name;
+    name = name[0];
+    name = propFix[name.toLowerCase()] || name;
+  }
 
   // Get
   if (typeof val === 'undefined') {
@@ -153,26 +155,37 @@ D8.setProp = curry(function (name, val, obj) {
   return prop(obj, name, val);
 });
 
-D8.getHtml = D8.getProp('innerHTML');
-D8.setHtml = D8.setProp('innerHTML');
-D8.getText = D8.getProp('textContent');
-D8.setText = D8.setProp('textContent');
-D8.getValue = D8.getProp('value');
-D8.setValue = D8.setProp('value');
+D8.getHtml = function (elem) {
+  return prop(elem, 'innerHTML', undefined, true);
+};
+D8.setHtml = curry(function (val, elem) {
+  return prop(elem, 'innerHTML', val, true);
+});
+D8.getText = function (elem) {
+  return prop(elem, 'textContent', undefined, true);
+};
+D8.setText = curry(function (val, elem) {
+  return prop(elem, 'textContent', val, true);
+});
+D8.getValue = function (elem) {
+  return prop(elem, 'value', undefined, true);
+};
+D8.setValue = curry(function (val, elem) {
+  return prop(elem, 'value', val, true);
+});
 D8.getData = curry(function (key, elem) {
   if (elem.datalist) {
-    return D8.getProp('datalist.' + key, elem);
+    return prop(elem, 'datalist.' + key);
   } else {
-    return D8.getAttr('data-' + toDashCase(key), elem);
+    return attr(elem, 'data-' + toDashCase(key));
   }
 });
 D8.setData = curry(function (key, val, elem) {
   if (elem.datalist) {
-    D8.setProp('datalist.' + key, val, elem);
+    return prop(elem, 'datalist.' + key, val, true);
   } else {
-    D8.setAttr('data-' + key, toDashCase(val), elem);
+    return attr(elen, 'data-' + toDashCase(key), val);
   }
-  return elem;
 });
 
 D8.addClass = curry(function (className, elem) {

@@ -12,8 +12,9 @@ var D8 = window.D8 = {};
 var ArrayProto = Array.prototype;
 var slice = ArrayProto.slice;
 var isArray = Array.isArray;
-var isString = function (obj) { return obj && typeof obj == 'string'; };
-var isElement = function (obj) { return obj && obj.nodeType === 1; };
+function isFunction (obj) { return obj && typeof obj == 'function'; };
+function isString (obj) { return obj && typeof obj == 'string'; };
+function isElement (obj) { return obj && obj.nodeType === 1; };
 
 var matchesSelector = (function () {
   var props = [ 'matches', 'webkitMatchesSelector', 'mozMatchesSelector',
@@ -24,15 +25,15 @@ var matchesSelector = (function () {
 })();
 
 // Accept an element, a function or a string and return an HTML Node
-var elementify = function (obj) {
-  if (typeof obj == 'function') obj = obj();
+function elementify (obj) {
+  if (isFunction(obj)) obj = obj();
   if (isString(obj)) obj = document.createTextNode(obj);
   if (obj == null || isNaN(obj.nodeType)) throw new TypeError();
   return obj;
 };
 
 // Returns new functions until all arguments (fn.length or fnLength) are filled
-var curry = function (fn, fnLength /*, args */) {
+function curry (fn, fnLength /*, args */) {
   var origArgs = slice.call(arguments, 2);
   fnLength || (fnLength = fn.length);
   return function () {
@@ -44,7 +45,7 @@ var curry = function (fn, fnLength /*, args */) {
 };
 
 // Flip the argument order of a function
-var flip = function (fn) {
+function flip (fn) {
   return function () {
     var args = slice.call(arguments);
     if (fn.length > 0) args = args.splice(0, fn.length);
@@ -53,40 +54,38 @@ var flip = function (fn) {
   };
 };
 
-var toDashCase = function (str) {
+var eq = curry(function (a, b) { a === b; });
+
+function toDashCase (str) {
   return str.replace(/([A-Z])/g, function (letter) {
     return '-' + letter.toLowerCase();
   });
 };
 
 
+
 // Properties and attributes
 // =========================
-
-(function () {
 
 // Properties that should be set directly and not as attributes.
 // Also used as map for case insensitive property names and for aliases
 // Some of these can probably be removed and fall back to attributes
-var propFix = "acceptCharset,accessKey,attributes,autocomplete,autofocus,autoplay,buffered,cellIndex,cellPadding,cellSpacing,cells,challenge,checked,childElementCount,childNodes,children,classList,className,clear,clientHeight,clientLeft,clientTop,clientWidth,colSpan,cols,compact,complete,content,contentDocument,contentEditable,contentWindow,control,controller,controls,coords,crossOrigin,currentSrc,currentTime,data,dataset,dateTime,declare,default,defaultChecked,defaultMuted,defaultPlaybackRate,defaultSelected,defaultValue,dirName,disabled,download,draggable,duration,elements,encoding,enctype,ended,error,event,files,firstChild,firstElementChild,form,formAction,formEnctype,formMethod,formNoValidate,formTarget,frame,frameBorder,hash,headers,height,hidden,high,host,hostname,htmlFor,httpEquiv,incremental,indeterminate,index,initialTime,innerHTML,innerText,isContentEditable,isMap,keytype,kind,label,labels,lastChild,lastElementChild,length,link,list,localName,longDesc,loop,low,max,maxLength,media,mediaGroup,multiple,muted,namespaceURI,naturalHeight,naturalWidth,networkState,nextElementSibling,nextSibling,noHref,noShade,noValidate,noWrap,nodeName,nodeType,nodeValue,nonce,offsetHeight,offsetLeft,offsetParent,offsetTop,offsetWidth,open,optimum,options,origin,outerHTML,outerText,ownerDocument,parentElement,parentNode,pathname,paused,ping,playbackRate,played,port,position,poster,prefix,preload,previousElementSibling,previousSibling,profile,protocol,readOnly,readyState,required,reversed,rowIndex,rowSpan,rows,rules,sandbox,scheme,scope,scrollHeight,scrollLeft,scrollTop,scrollWidth,scrolling,seamless,search,sectionRowIndex,seekable,seeking,selected,selectedIndex,selectedOptions,selectionDirection,selectionEnd,selectionStart,shape,sheet,size,sizes,span,standby,start,startTime,step,style,summary,tabIndex,tagName,text,textContent,textLength,textTracks,track,translate,type,useMap,validationMessage,validity,value,valueAsDate,valueAsNumber,valueType,version,videoHeight,videoWidth,volume,width,willValidate,wrap,x,y"
+var propertyMap = "acceptCharset,accessKey,attributes,autocomplete,autofocus,autoplay,buffered,cellPadding,cellSpacing,cells,challenge,checked,childElementCount,childNodes,children,classList,className,clear,clientHeight,clientLeft,clientTop,clientWidth,colSpan,cols,compact,complete,content,contentDocument,contentEditable,contentWindow,control,controller,controls,coords,crossOrigin,currentSrc,currentTime,data,dataset,dateTime,declare,default,defaultChecked,defaultMuted,defaultPlaybackRate,defaultSelected,defaultValue,dirName,disabled,download,draggable,duration,elements,encoding,enctype,ended,error,event,files,firstChild,firstElementChild,form,formAction,formEnctype,formMethod,formNoValidate,formTarget,frame,frameBorder,hash,headers,height,hidden,high,host,hostname,htmlFor,httpEquiv,incremental,indeterminate,index,initialTime,innerHTML,innerText,isContentEditable,isMap,keytype,kind,label,labels,lastChild,lastElementChild,length,link,list,localName,loop,low,max,media,mediaGroup,multiple,muted,naturalHeight,naturalWidth,networkState,nextElementSibling,nextSibling,noHref,noShade,noValidate,noWrap,nodeName,nodeType,nodeValue,nonce,offsetHeight,offsetLeft,offsetParent,offsetTop,offsetWidth,open,optimum,options,origin,outerHTML,outerText,ownerDocument,parentElement,parentNode,pathname,paused,ping,playbackRate,played,port,position,poster,prefix,preload,previousElementSibling,previousSibling,profile,protocol,readOnly,readyState,required,reversed,rowIndex,rowSpan,rows,rules,sandbox,scheme,scope,scrollHeight,scrollLeft,scrollTop,scrollWidth,scrolling,seamless,search,sectionRowIndex,seekable,seeking,selected,selectedIndex,selectedOptions,selectionDirection,selectionEnd,selectionStart,shape,sheet,size,sizes,span,standby,start,startTime,step,style,summary,tabIndex,tagName,text,textContent,textLength,textTracks,track,translate,type,useMap,validationMessage,validity,value,valueAsDate,valueAsNumber,valueType,version,videoHeight,videoWidth,volume,width,willValidate,wrap,x,y"
   .split(',').reduce(function (map, key) {
     map[key.toLowerCase()] = key;
     return map;
   }, {});
 
 // Aliases for common shorthands/mistakes
-var aliasedProps = {
-  'class': 'className', 'for': 'htmlFor', 'html': 'innerHTML', 'text': 'textContent' };
-for (var key in aliasedProps) {
-  propFix[key] = aliasedProps[key];
-}
+var aliasedProps = { 'class': 'className', 'for': 'htmlFor', 'html': 'innerHTML', 'text': 'textContent' };
+for (var key in aliasedProps) propertyMap[key] = aliasedProps[key];
 
 function attrOrProp (obj, name, val) {
   if ((/\./).test(name)) return prop(obj, name, val);
-  var direct = propFix[name.toLowerCase()];
+  var direct = propertyMap[name.toLowerCase()];
   if (direct) return prop(obj, direct, val, true);
   else return attr(obj, name, val);
-};
+}
 
 D8.get = curry(function (name, elem) {
   return attrOrProp(elem, name);
@@ -96,25 +95,28 @@ D8.set = curry(function (name, val, elem) {
 });
 
 
-
 // Attributes
 // ----------
 
 function attr (elem, name, val) {
-  if (name == null || !isElement(elem)) return;
+  if (name == null || !isElement(elem)) return;
   name = name.toLowerCase();
   if (typeof val === 'undefined') {
     return elem.getAttribute(name);
   }
-  if (val === false || val === null) {
+  if (val === false || val === null) {
     elem.removeAttribute(name);
   } else {
     elem.setAttribute(name, val + "");
   }
   return elem;
-};
+}
 D8.getAttr = curry(function (name, elem) {
   return attr(elem, name);
+});
+D8.hasAttr = curry(function (name, elem) {
+  if (name == null || !isElement(elem)) return false;
+  return elem.hasAttribute(name.toLowerCase());
 });
 D8.removeAttr = curry(function (name, elem) {
   return attr(elem, name, false);
@@ -136,7 +138,7 @@ function prop (obj, name, val, isNormalized) {
     while (name.length > 1) obj = prop(obj, name.shift());
 
     name = name[0];
-    name = propFix[name.toLowerCase()] || name;
+    name = propertyMap[name.toLowerCase()] || name;
   }
 
   // Get
@@ -146,7 +148,7 @@ function prop (obj, name, val, isNormalized) {
   // Set
   obj[name] = val;
   return obj;
-};
+}
 
 D8.getProp = curry(function (name, obj) {
   return prop(obj, name);
@@ -184,7 +186,7 @@ D8.setData = curry(function (key, val, elem) {
   if (elem.datalist) {
     return prop(elem, 'datalist.' + key, val, true);
   } else {
-    return attr(elen, 'data-' + toDashCase(key), val);
+    return attr(elem, 'data-' + toDashCase(key), val);
   }
 });
 
@@ -204,10 +206,10 @@ D8.hasClass = curry(function (className, elem) {
   return elem.classList.contains(className);
 });
 
-})();
 
 
 // Manipulation
+// ============
 
 var after = function (content, elem) {
   content = elementify(content);
@@ -249,69 +251,106 @@ var replace = function (oldElem, newContent) {
 D8.replace = curry(replace);
 D8.replaceWith = curry(flip(replace), 2);
 
-D8.clone = curry(function (elem, shallow) {
+D8.clone = curry(function clone (elem, shallow) {
   return elem.cloneNode(!shallow);
 }, 1);
-D8.remove = curry(function (elem) {
+D8.remove = curry(function remove (elem) {
   return elem.parentNode.removeChild(elem);
 });
 
 
 // Traversal
+// ---------
 
-D8.matches = curry(function (sel, elem) {
-  return elem[matchesSelector](sel);
-});
-D8.has = curry(function (sel, elem) {
-  return !!elem.querySelector(sel);
-});
+function matches (cond, elem) {
+  if (isFunction(cond)) {
+    return cond(elem);
+  } else if (isString(cond)) {
+    return elem[matchesSelector] && elem[matchesSelector](cond);
+  } else {
+    return eq(cond, elem);
+  }
+}
+D8.matches = curry(matches);
+D8.matchedBy = curry(flip(matches));
 
-var contains = function (child, parent) {
-  return parent.contains(child);
-};
+function contains (cond, parent) {
+  return !!findOne(cond, parent);
+}
 D8.contains = curry(contains);
-D8.containedBy = curry(flip(D8.contains), 2);
-
-var find = function (sel, elem) {
-  return elem.querySelectorAll(sel);
+D8.containedBy = function (cond, child) {
+  return !!parents(child, cond, 1);
 };
-D8.find = curry(find);
+  
+
+function find (cond, elem) {
+  if (isString(cond)) return slice.call(elem.querySelectorAll(cond));
+  if (!isFunction(cond)) cond = eq(elem);
+  return slice.call(elem.getElementsByTagName('*')).filter(cond);
+}
+D8.find = curry(find, 2);
 D8.findIn = curry(flip(find), 2);
 
-var findOne = function (sel, elem) {
-  return elem.querySelector(sel);
-};
+function findOne (cond, elem) {
+  if (isString(cond)) return slice.call(elem.querySelector(cond));
+  if (!isFunction(cond)) cond = eq(elem);
+  var match = null;
+  slice.call(elem.getElementsByTagName('*')).some(function (cand) {
+    if (cond(cand)) {
+      match = cand;
+      return true;
+    }
+  });
+  return match;
+}
 D8.findOne = curry(findOne);
 D8.findOneIn = curry(flip(findOne), 2);
 
 var findByTag = function (tag, elem) {
-  return elem.getElementsByTagName(tag);
+  return slice.call(elem.getElementsByTagName(tag));
 };
 D8.findByTag = curry(findByTag);
 D8.findByTagIn = curry(flip(findByTag), 2);
 
 var findByClass = function (className, elem) {
-  return elem.getElementsByClassName(className);
+  return slice.call(elem.getElementsByClassName(className));
 };
 D8.findByClass = curry(findByClass);
 D8.findByClassIn = curry(flip(findByClass), 2);
 
-
-D8.next = D8.getProp('nextElementSibling');
-D8.prev = D8.getProp('previousElementSibling');
-D8.parent = D8.getProp('parentNode');
+D8.next = function (elem) {
+  return prop(elem, 'nextElementSibling', undefined, true);
+};
+D8.prev = function (elem) {
+  return prop(elem, 'previousElementSibling', undefined, true);
+};
 D8.childrenOf = curry(function (elem, sel) {
   if (sel == null) return elem.children;
   return slice.call(elem.children).filter(D8.matches(sel));
 }, 1);
-D8.parentsOf = curry(function (elem, sel) {
-  var parents = [];
-  while (elem = elem.parentNode) {
-    if (sel == null || (elem[matchesSelector] && elem[matchesSelector](sel))) {
-      parents[parents.length] = elem;
-    }
+
+function parents (elem, cond, max) {
+  if (isString(cond)) {
+    var sel = cond;
+    cond = function (elem) { return elem[matchesSelector] && elem[matchesSelector](sel); };
+  } else if (cond != null && !isFunction(cond)) {
+    cond = eq(elem);
   }
-  return parents;
+  var matches = [];
+  while ((elem = elem.parentNode)
+      && elem.nodeType !== 11 // DocumentFragment
+      && !(max && matches.length >= max)) {
+    if (cond == null || cond(elem)) matches[matches.length] = elem;
+  }
+  return matches;
+}
+
+D8.parent = curry(function (elem, cond) {
+  return parents(elem, cond, 1)[0];
+}, 1);
+
+D8.parentsOf = curry(function (elem, cond) {
+  return parents(elem, cond);
 }, 1);
 
 
@@ -348,8 +387,7 @@ D8.getStyle = curry(function (prop, elem) {
   return elem.ownerDocument.defaultView.getComputedStyle(elem)[prop];
 });
 D8.setStyle = curry(function (prop, val, elem) {
-  D8.setProp('style.' + prop, val, elem);
-  return elem;
+  return prop(elem, 'style.' + prop, val);
 });
 D8.hide = D8.setStyle('display', 'none');
 D8.show = D8.setStyle('display', 'block');

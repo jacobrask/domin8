@@ -127,52 +127,75 @@ Remove an element from the DOM.
 
 ## Traversal
 
-### `D8.matches(selector, elem)`
+`condition` can be either a CSS selector, an HTML element or a test function.
 
-Does `elem` match `selector`?
+### `D8.matches(condition, elem)`
 
-### `D8.has(selector, elem)`
+Returns: *`Boolean`*
 
-Does `elem` have a child matching `selector`?
+### `D8.contains(condition, parent)`
 
-### `D8.contains(child, parent)`
+Returns: *`Boolean`*
 
-### `D8.containedBy(parent, child)`
+### `D8.containedBy(condition, child)`
 
-### `D8.find(selector, elem)`
+Returns: *`Boolean`*
 
-Return all `elem`'s children matching `selector`.
+### `D8.find(condition, elem)`
 
-### `D8.findIn(elem, selector)`
+Returns *`Array`*
 
-### `D8.findOne(selector, elem)`
+### `D8.findIn(elem, condition)`
 
-Return the first child of `elem`  matching `selector`.
+Returns *`Array`*
 
-### `D8.findOneIn(elem, selector)`
+### `D8.findOne(condition, elem)`
+
+Returns *`Element`*
+
+### `D8.findOneIn(elem, condition)`
+
+Returns *`Element`*
 
 ### `D8.findByTag(tagName, elem)`
 
+Returns *`Array`*
+
 ### `D8.findByTagIn(tagName, elem)`
+
+Returns *`Array`*
 
 ### `D8.findByClass(className, elem)`
 
+Returns *`Array`*
+
 ### `D8.findByClassIn(className, elem)`
+
+Returns *`Array`*
 
 ### `D8.next(elem)`
 
+Returns *`Element`*
+
 ### `D8.prev(elem)`
+
+Returns *`Element`*
 
 ### `D8.parent(elem)`
 
-### `D8.childrenOf(elem[, selector])`
+Returns *`Element`*
 
-Return immediate children of `elem`, optionally matching `selector`.
+### `D8.childrenOf(elem[, condition])`
 
-### `D8.parentsOf(elem[, selector])`
+Returns *`Array`*
 
-Return parents of `elem`, optionally matching `selector`.
+Immediate children of `elem`, optionally matching `condition`.
 
+### `D8.parentsOf(elem[, condition])`
+
+All parents of `elem`, optionally matching `condition`.
+
+Returns *`Array`*
 
 ## Element creation
 

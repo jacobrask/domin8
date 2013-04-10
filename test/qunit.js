@@ -419,7 +419,7 @@ QUnit = {
 		test.queue();
 	},
 
-	// Specify the number of expected assertions to gurantee that failed test (no assertions are run at all) don't slip through.
+	// Specify the number of expected assertions to guarantee that failed test (no assertions are run at all) don't slip through.
 	expect: function( asserts ) {
 		if (arguments.length === 1) {
 			config.current.expected = asserts;
@@ -1188,7 +1188,7 @@ addEvent( window, "load", QUnit.load );
 onErrorFnPrev = window.onerror;
 
 // Cover uncaught exceptions
-// Returning true will surpress the default browser handler,
+// Returning true will suppress the default browser handler,
 // returning false will let it run.
 window.onerror = function ( error, filePath, linerNr ) {
 	var ret = false;
@@ -1197,7 +1197,7 @@ window.onerror = function ( error, filePath, linerNr ) {
 	}
 
 	// Treat return value as window.onerror itself does,
-	// Only do our handling if not surpressed.
+	// Only do our handling if not suppressed.
 	if ( ret !== true ) {
 		if ( QUnit.config.current ) {
 			if ( QUnit.config.current.ignoreGlobalErrors ) {
@@ -2143,7 +2143,7 @@ QUnit.diff = (function() {
 	};
 }());
 
-// for CommonJS enviroments, export everything
+// for CommonJS environments, export everything
 if ( typeof exports !== "undefined" ) {
 	extend( exports, QUnit );
 }

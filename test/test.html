@@ -3,27 +3,22 @@
 <head>
   <meta charset="utf-8">
   <title>Domin8 tests</title>
-  <link rel="stylesheet" href="qunit.css">
+  <link rel="stylesheet" href="./vendor/qunit.css">
   <script src="../domin8.js"></script>
 </head>
 <body>
   <div id="qunit"></div>
   <div id="qunit-fixture">
-    <div id="test-elem"></div>
     <input>
-    <div id="test-html">
+    <div id="test-elem">
       <p>Text <b>html</b></p>
       <p>
     </div>
-    <div id="test-manip">Text <b>html</b></div>
-    <div id="test-traverse">
-      <strong><i>text</i> <span>text2</span></strong>
-    </div>
-    <div id="test-style" style="width:100px">foo</div>
   </div>
-  <script src="qunit.js"></script>
-  <script src="manip.js"></script>
+  <script src="./vendor/qunit.js"></script>
   <script src="props.js"></script>
-  <script src="tests.js"></script>
+  <script src="content.js"></script>
+  <script src="traversal.js"></script>
+  <script src="create.js"></script>
 </body>
 </html>

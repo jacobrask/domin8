@@ -1,6 +1,5 @@
-var elem = document.getElementById('test-html');
-
 test("Attributes", function () {
+  var elem = document.getElementById('test-elem');
   elem.setAttribute('attr1', 'bar');
   equal(D8.getAttr('attr1', elem), 'bar', "Get attribute");
   equal(D8.getAttr('attr1')(elem), 'bar', "Get attribute (curried)");
@@ -34,6 +33,7 @@ test("Attributes", function () {
 });
 
 test("Regular properties", function () {
+  var elem = document.getElementById('test-elem');
   elem.title = 'foo';
   equal(D8.getProp('title', elem), 'foo', "Get property");
   equal(D8.getProp('title')(elem), 'foo', "Get property (curried)");
@@ -52,6 +52,7 @@ test("Regular properties", function () {
 });
 
 test("Nested properties", function () {
+  var elem = document.getElementById('test-elem');
   elem.dataset.foo = 'bar';
   equal(D8.getProp('dataset.foo', elem), 'bar', "Get property");
 
@@ -60,6 +61,7 @@ test("Nested properties", function () {
 });
 
 test("Smart get/set", function () {
+  var elem = document.getElementById('test-elem');
   elem.setAttribute('attr1', 'bar');
   equal(D8.get('attr1', elem), 'bar', "Get attribute");
   equal(D8.get('attr1')(elem), 'bar', "Get attribute (curried)");
@@ -84,6 +86,7 @@ test("Smart get/set", function () {
 });
 
 test("Property shorthands", function () {
+  var elem = document.getElementById('test-elem');
   equal(D8.getHtml(elem), '\n      <p>Text <b>html</b></p>\n      <p>\n    </p>', "Get HTML");
   equal(D8.getText(elem), '\n      Text html\n      \n    ', "Get text");
   D8.setHtml('<b>', elem);
@@ -92,7 +95,7 @@ test("Property shorthands", function () {
   equal(elem.textContent, '<b>', "Set text");
   equal(elem.innerHTML, '&lt;b&gt;', "Set text");
 
-  var input = document.getElementById('qunit-fixture').getElementsByTagName('input');
+  var input = document.getElementById('qunit-fixture').getElementsByTagName('input')[0];
   input.value = "foo";
   equal(D8.getValue(input), 'foo', "Get value");
   D8.setValue('bar', input);

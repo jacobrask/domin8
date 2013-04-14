@@ -28,65 +28,235 @@ deactivate(elem);
 Domin8 is currently not tested in many browsers, but the goal is compatibility
 with the two latest versions of major browsers.
 
+
 # API
 
 ## Attributes and properties
 
-### `D8.get(prop, elem)`
+### D8.get(name, target) & D8.getFrom(target, name)
 
-Returns the property value for known element properties, otherwise the attribute.
-Property access can be nested: `D8.get('style.background')`
+Returns **Anything**
 
-### `D8.set(prop, val, elem)`
+Gets a property or an attribute. Treats `name` as an attribute unless `target` is a non-Element Node, or `name` is in a list of known Element direct properties.
 
-Sets the property value for known element properties, otherwise the attribute.
-Property assignment can be nested: `D8.set('style.background')`
+#### Parameters
 
-### `D8.getAttr(attr, elem)`
+ * **name** String - The property or attribute to access. Can be nested with a dot: `style.background`.
 
-### `D8.setAttr(attr, val, elem)`
+ * **target** Node
 
-### `D8.removeAttr(attr)`
 
-### `D8.getProp(prop, obj)`
+### D8.set(name, value, target) & D8.setOn(target, name, value)
 
-### `D8.setProp(prop, val, obj)`
+Returns **Node** (target)
 
-### `D8.getHtml(elem)`
+Sets a property or an attribute. Treats `name` as an attribute unless `target` is a non-Element Node, or `name` is in a list of known Element direct properties.
 
-### `D8.setHtml(elem, html)`
+#### Parameters
 
-### `D8.getText(elem)`
+ * **name** String - The property or attribute to access. Can be nested with a dot: `style.background`.
 
-### `D8.setText(elem, text)`
+ * **value** Anything
 
-### `D8.getValue(elem)`
+ * **target** Node
 
-### `D8.setValue(val, elem)`
 
-### `D8.getData(key, elem)`
+### D8.getAttr(attr, target) & D8.getAttrFrom(target, attr)
 
-### `D8.setData(key, data, elem)`
+Returns **String**
 
-### `D8.addClass(className, elem)`
+#### Parameters
 
-### `D8.removeClass(className, elem)`
+ * **attr** String
 
-### `D8.toggleClass(className, elem)`
+ * **target** Element
 
-### `D8.hasClass(className, elem)`
 
+### D8.setAttr(attr, value, target) & D8.setAttrOn(target, attr, value)
+
+Returns **Element** (target)
+
+#### Parameters
+
+ * **name** String
+
+ * **value** String
+
+ * **target** Element
+
+
+### D8.removeAttr(attr, target) & D8.removeAttrFrom(target, attr)
+
+Returns **Element** (target)
+
+#### Parameters
+
+ * **attr** String
+
+ * **target** Element
+ 
+
+### D8.getProp(name, target) & D8.getPropFrom(target, name)
+
+Returns **Anything**
+
+#### Parameters
+
+ * **name** String - Can be nested with a dot: `firstChild.tagName`.
+
+ * **target** Node
+
+
+### D8.setProp(name, value, target) & D8.setPropOn(target, name, value)
+
+Returns **Node** (target)
+
+#### Parameters
+
+ * **name** String - Can be nested with a dot: `style.background`.
+
+ * **value** Anything
+
+ * **target** Node
+
+
+### D8.getHtml(target) & D8.getHtmlFrom(target)
+
+Returns **String**
+
+#### Parameters
+
+ * **target** Element
+
+
+### D8.setHtml(html, target) & D8.setHtmlOn(target, html)
+
+Returns **Element** (target)
+
+#### Parameters
+
+ * **html** String
+
+ * **target** Element
+
+
+### D8.getText(target) & D8.getTextFrom(target)
+
+Returns **String**
+
+#### Parameters
+
+ * **target** Node
+
+
+### D8.setText(text, target) & D8.setTextOn(target, text)
+
+Returns **Element**
+
+#### Parameters
+
+ * **text** String
+
+ * **target** Node
+
+
+### D8.getValue(target) & D8.getValueFrom(target)
+
+Returns **String**
+
+#### Parameters
+
+ * **target** Element
+
+
+### D8.setValue(value, target) & D8.setValueOn(target, value)
+
+Returns **Element**
+
+#### Parameters
+
+ * **value** String
+
+ * **target** Element
+
+
+### D8.getData(key, target) & D8.getDataFrom(target, key)
+
+Returns **String**
+
+Wraps the HTML5 data API, and fallbacks to data attributes for unsupporting browsers.
+
+#### Parameters
+
+ * **key** String - camelCased dataset key.
+
+ * **target** Element
+
+
+### D8.setData(key, value, ref) & D8.setDataOn(target, key, value)
+
+Returns **Element** (target)
+
+Wraps the HTML5 data API, and fallbacks to data attributes for unsupporting browsers.
+
+#### Parameters
+
+ * **key** String - camelCased dataset key.
+ 
+ * **value** String
+
+ * **target** Element
+
+
+### D8.addClass(className, target) & D8.addClassTo(target, className)
+
+Returns **Element** (target)
+
+#### Parameters
+
+ * **className** String
+
+ * **target** Element 
+
+
+### D8.removeClass(className, target) & D8.removeClassFrom(target, className)
+
+Returns **Element** (target)
+
+#### Parameters
+
+ * **className** String
+
+ * **target** Element 
+
+
+### D8.toggleClass(className, target) & D8.toggleClassOn(target, className)
+
+Returns **Element** (target)
+
+#### Parameters
+
+ * **className** String
+
+ * **target** Element 
+
+
+### D8.hasClass(className, elem) & D8.hasClassOn(target, className)
+
+Returns **Boolean**
+
+#### Parameters
+
+ * **className** String
+
+ * **target** Element 
 
 
 ## Manipulation
 
-### `D8.after(content, elem)`
+### `D8.after(content, reference)` & D8.insertAfter(reference, content)
 
-Insert `content` after `elem`
-
-### `D8.insertAfter(elem, content)`
-
-After `elem`, insert `content`.
+Insert `content` after `reference`
 
 ### `D8.before(content, elem)`
 
@@ -120,6 +290,10 @@ To `elem`, append `content`.
 
 Clone an element.
 
+### `D8.cloner(elem[, shallow])`
+
+Return a function which clones `elem` every time it is called.
+
 ### `D8.remove(elem)`
 
 Remove an element from the DOM.
@@ -131,80 +305,77 @@ Remove an element from the DOM.
 
 ### `D8.matches(condition, elem)`
 
-Returns: *`Boolean`*
+Returns: **`Boolean`*
 
 ### `D8.contains(condition, parent)`
 
-Returns: *`Boolean`*
+Returns: **`Boolean`*
 
 ### `D8.containedBy(condition, child)`
 
-Returns: *`Boolean`*
+Returns **`Boolean`**
 
-### `D8.find(condition, elem)`
+### D8.find(condition, elem) & D8.findIn(elem, condition)
 
-Returns *`Array`*
+Returns **`Array`**
 
-### `D8.findIn(elem, condition)`
+### D8.findOne(condition, elem) & D8.findOneIn(elem, condition)
 
-Returns *`Array`*
-
-### `D8.findOne(condition, elem)`
-
-Returns *`Element`*
-
-### `D8.findOneIn(elem, condition)`
-
-Returns *`Element`*
+Returns **`Element`**
 
 ### `D8.findByTag(tagName, elem)`
 
-Returns *`Array`*
+Returns **`Array`**
 
 ### `D8.findByTagIn(tagName, elem)`
 
-Returns *`Array`*
+Returns **`Array`**
 
 ### `D8.findByClass(className, elem)`
 
-Returns *`Array`*
+Returns **`Array`**
 
 ### `D8.findByClassIn(className, elem)`
 
-Returns *`Array`*
+Returns **`Array`**
 
 ### `D8.next(elem)`
 
-Returns *`Element`*
+Returns **`Element`**
 
 ### `D8.prev(elem)`
 
-Returns *`Element`*
-
-### `D8.parent(elem)`
-
-Returns *`Element`*
+Returns **`Element`**
 
 ### `D8.childrenOf(elem[, condition])`
 
-Returns *`Array`*
+Returns **`Array`**
 
 Immediate children of `elem`, optionally matching `condition`.
+
+### `D8.parentOf(elem)`
+
+Returns **`Element`**
 
 ### `D8.parentsOf(elem[, condition])`
 
 All parents of `elem`, optionally matching `condition`.
 
-Returns *`Array`*
+Returns **`Array`**
 
 ## Element creation
 
 ### `D8.make(tag, props, children)`
 
+Returns **`Element`**
+
  * `tag` is a string with an optional ID and class names: `tagname#id.class1.class2`
  * `props` is an object with properties and attributes to set on the new element.
  * `children` is an array of DOM nodes or text strings to append to the new element.
 
+### `D8.maker(tag, props, children)`
+
+Returns **Function** creating a new element every time it is called.
 
 ## Style
 

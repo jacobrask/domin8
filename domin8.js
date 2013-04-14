@@ -168,7 +168,7 @@ D8.setAttr = partialize(function (name, value, elem) {
 D8.setOn = partialize(fns.attr);
 
 D8.hasAttr = partialize(flip(fns.hasAttr), 2);
-D8.hasAttrFrom = partialize(fns.hasAttr);
+D8.hasAttrOn = partialize(fns.hasAttr);
 
 D8.removeAttr = partialize(function (name, elem) {
   return fns.attr(elem, name, false);
@@ -249,6 +249,7 @@ D8.addClassTo = partialize(function (elem, name) {
   fns.className(elem, 'add', name);
   return elem;
 });
+
 D8.removeClass = partialize(function (name, elem) {
   fns.className(elem, 'remove', name);
   return elem;
@@ -259,16 +260,18 @@ D8.removeClassFrom = partialize(function (elem, name) {
 });
 
 D8.toggleClass = partialize(function (name, elem) {
-  return fns.className(elem, 'toggle', name);
+  fns.className(elem, 'toggle', name);
+  return elem;
 });
 D8.toggleClassOn = partialize(function (elem, name) {
-  return fns.className(elem, 'toggle', name);
+  fns.className(elem, 'toggle', name);
+  return elem;
 });
 
 D8.hasClass = partialize(function (name, elem) {
   return fns.className(elem, 'has', name);
 });
-D8.hasClassFrom = partialize(function (elem, name) {
+D8.hasClassOn = partialize(function (elem, name) {
   return fns.className(elem, 'has', name);
 });
 

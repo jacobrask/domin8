@@ -95,6 +95,11 @@ test("Property shorthands", function () {
   equal(elem.textContent, '<b>', "Set text");
   equal(elem.innerHTML, '&lt;b&gt;', "Set text");
 
+  var textNode = document.createTextNode('foobar');
+  equal(D8.getText(textNode), 'foobar', "Get text from text node");
+  D8.setText('baz', textNode);
+  equal(D8.getText(textNode), 'baz', "Set text on text node");
+
   var input = document.getElementById('qunit-fixture').getElementsByTagName('input')[0];
   input.value = "foo";
   equal(D8.getValue(input), 'foo', "Get value");

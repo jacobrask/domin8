@@ -370,8 +370,8 @@ function style (name, value, elem) {
 D8.after = curry(manipulator('insertBefore', 'parentNode', 'nextSibling'), 2);
 D8.insertAfter = curry(flip(manipulator('insertBefore', 'parentNode', 'nextSibling')), 2);
 
-D8.before = curry(manipulator('insertBefore', 'parentNode'), 2);
-D8.insertBefore = curry(flip(manipulator('insertBefore', 'parentNode')), 2);
+D8.before = curry(manipulator('insertBefore', 'parentNode', true), 2);
+D8.insertBefore = curry(flip(manipulator('insertBefore', 'parentNode', true)), 2);
 
 D8.prepend = curry(manipulator('insertBefore', '', 'firstChild'), 2);
 D8.prependTo = curry(flip(manipulator('insertBefore', '', 'firstChild')), 2);
@@ -379,8 +379,8 @@ D8.prependTo = curry(flip(manipulator('insertBefore', '', 'firstChild')), 2);
 D8.append = curry(manipulator('appendChild'), 2);
 D8.appendTo = curry(flip(manipulator('appendChild')), 2);
 
-D8.replace = curry(flip(manipulator('replaceChild', 'parentNode')), 2);
-D8.replaceWith = curry(manipulator('replaceChild', 'parentNode'), 2);
+D8.replace = curry(flip(manipulator('replaceChild', 'parentNode', true)), 2);
+D8.replaceWith = curry(manipulator('replaceChild', 'parentNode', true), 2);
 
 D8.remove = function (elem) { return elem.parentNode.removeChild(elem); };
 
@@ -390,10 +390,14 @@ D8.cloner = saturate(D8.clone);
 D8.empty = D8.setProp('textContent', '');
 
 // Invokes `method` on `elem[parent]` with arguments `content` and `elem[rel]`
+// TODO: Make this make sense
 function manipulator (method, parent, rel) {
   return function manipulator (content, elem) {
-    content = nodeify(content);
-    (parent ? elem[parent] : elem)[method](content, (rel ? elem[rel] : elem));
+    var args = [ nodeify(content) ];
+    if (rel === true) args.push(elem);
+    else if (rel != null) args.push(elem[rel]);
+    var root = parent ? elem[parent] : elem;
+    root[method].apply(root, args);
     return elem;
   };
 }

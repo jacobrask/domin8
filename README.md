@@ -14,7 +14,7 @@ return a new function accepting the remaining arguments.
 
 This lets you do things like:
 
-```JavaScript
+```
 D8.removeClass('highlight', elem);
 
 var removeHighlight = D8.removeClass('highlight');
@@ -39,10 +39,7 @@ Returns **Anything**
 
 Gets a property or an attribute. Treats `name` as an attribute unless `target` is a non-Element Node, or `name` is in a list of known Element direct properties.
 
-#### Parameters
-
  * **name** String - The property or attribute to access. Can be nested with a dot: `style.background`.
-
  * **target** Node
 
 
@@ -52,12 +49,8 @@ Returns **Node** (target)
 
 Sets a property or an attribute. Treats `name` as an attribute unless `target` is a non-Element Node, or `name` is in a list of known Element direct properties.
 
-#### Parameters
-
  * **name** String - The property or attribute to access. Can be nested with a dot: `style.background`.
-
  * **value** Anything
-
  * **target** Node
 
 
@@ -65,10 +58,7 @@ Sets a property or an attribute. Treats `name` as an attribute unless `target` i
 
 Returns **String**
 
-#### Parameters
-
  * **attr** String
-
  * **target** Element
 
 
@@ -76,12 +66,8 @@ Returns **String**
 
 Returns **Element** (target)
 
-#### Parameters
-
  * **name** String
-
  * **value** String
-
  * **target** Element
 
 
@@ -89,10 +75,7 @@ Returns **Element** (target)
 
 Returns **Element** (target)
 
-#### Parameters
-
  * **attr** String
-
  * **target** Element
  
 
@@ -100,10 +83,7 @@ Returns **Element** (target)
 
 Returns **Anything**
 
-#### Parameters
-
  * **name** String - Can be nested with a dot: `firstChild.tagName`.
-
  * **target** Node
 
 
@@ -111,20 +91,14 @@ Returns **Anything**
 
 Returns **Node** (target)
 
-#### Parameters
-
  * **name** String - Can be nested with a dot: `style.background`.
-
  * **value** Anything
-
  * **target** Node
 
 
 ### D8.getHtml(target) & D8.getHtmlFrom(target)
 
 Returns **String**
-
-#### Parameters
 
  * **target** Element
 
@@ -133,18 +107,13 @@ Returns **String**
 
 Returns **Element** (target)
 
-#### Parameters
-
  * **html** String
-
  * **target** Element
 
 
 ### D8.getText(target) & D8.getTextFrom(target)
 
 Returns **String**
-
-#### Parameters
 
  * **target** Node
 
@@ -153,18 +122,13 @@ Returns **String**
 
 Returns **Element**
 
-#### Parameters
-
  * **text** String
-
  * **target** Node
 
 
 ### D8.getValue(target) & D8.getValueFrom(target)
 
 Returns **String**
-
-#### Parameters
 
  * **target** Element
 
@@ -173,10 +137,7 @@ Returns **String**
 
 Returns **Element**
 
-#### Parameters
-
  * **value** String
-
  * **target** Element
 
 
@@ -186,10 +147,7 @@ Returns **String**
 
 Wraps the HTML5 data API, and fallbacks to data attributes for unsupporting browsers.
 
-#### Parameters
-
  * **key** String - camelCased dataset key.
-
  * **target** Element
 
 
@@ -199,12 +157,8 @@ Returns **Element** (target)
 
 Wraps the HTML5 data API, and fallbacks to data attributes for unsupporting browsers.
 
-#### Parameters
-
  * **key** String - camelCased dataset key.
- 
  * **value** String
-
  * **target** Element
 
 
@@ -212,10 +166,7 @@ Wraps the HTML5 data API, and fallbacks to data attributes for unsupporting brow
 
 Returns **Element** (target)
 
-#### Parameters
-
  * **className** String
-
  * **target** Element 
 
 
@@ -223,10 +174,7 @@ Returns **Element** (target)
 
 Returns **Element** (target)
 
-#### Parameters
-
  * **className** String
-
  * **target** Element 
 
 
@@ -237,152 +185,283 @@ Returns **Element** (target)
 #### Parameters
 
  * **className** String
-
  * **target** Element 
 
 
-### D8.hasClass(className, elem) & D8.hasClassOn(target, className)
+### D8.hasClass(condition, elem) & D8.hasClassOn(target, condition)
 
 Returns **Boolean**
 
-#### Parameters
-
- * **className** String
-
+ * **condition** String | Function | RegExp - Tests if any of the element's class names match the condition.
  * **target** Element 
+
 
 
 ## Manipulation
 
-### `D8.after(content, reference)` & D8.insertAfter(reference, content)
+If `content` is a string, it will be converted to a text node, automatically
+escaping all HTML. Functions will be evaluated. Content can be inside Arrays,
+NodeLists or HTMLCollections.
 
-Insert `content` after `reference`
 
-### `D8.before(content, elem)`
+### D8.after(content, reference) & D8.insertAfter(reference, content)
 
-Insert `content` before `elem`
+Returns **Element** (reference)
 
-### `D8.insertBefore(elem, content)`
+Insert `content` after `reference`. 
 
-Before `elem`, insert `content`.
+ * **content** Node | String | Function | [Node] | [String] | [Function]
+ * **reference** Element 
 
-### `D8.prepend(content, elem)`
 
-Prepend `content` to `elem`.
+### D8.before(content, reference) & D8.insertBefore(reference, content)
 
-### `D8.prependTo(elem, content)`
+Returns **Element** (reference)
 
-To `elem`, prepend `content`.
+Insert `content` before `reference`
 
-### `D8.append(content, elem)`
+ * **content** Node | String | Function | [Node] | [String] | [Function]
+ * **reference** Element 
 
-Append `content` to `elem`.
 
-### `D8.appendTo(elem, content)`
+### D8.prepend(content, reference) & D8.prependTo(reference, content)
 
-To `elem`, append `content`.
+Returns **Element** (reference)
 
-### `D8.replace(oldElem, newContent)`
+Insert `content` before `reference`
 
-### `D8.replaceWith(newContent, oldElem)`
+ * **content** Node | String | Function | [Node] | [String] | [Function]
+ * **reference** Element 
 
-### `D8.clone(elem[, shallow])`
+
+### D8.append(content, reference) D8.appendTo(reference, content)
+
+Returns **Element** (reference)
+
+Insert `content` before `reference`
+
+ * **content** Node | String | Function | [Node] | [String] | [Function]
+ * **reference** Element 
+
+
+### D8.replace(reference, content) & D8.replaceWith(content, reference)
+
+Returns **Element** (reference)
+
+Replace `reference` with `content`
+
+ * **content** Node | String | Function | [Node] | [String] | [Function]
+ * **reference** Element 
+
+
+### D8.clone(elem[, shallow])
+
+Returns **Element**
 
 Clone an element.
 
-### `D8.cloner(elem[, shallow])`
+ * **elem** Element
+ * **shallow** (optional) Boolean - Don't include child nodes.
 
-Return a function which clones `elem` every time it is called.
 
-### `D8.remove(elem)`
+### D8.cloner(elem[, shallow])
+
+Returns **Function**
+
+A function that clones `elem` every time it is called.
+
+ * **elem** Element
+ * **shallow** (optional) Boolean - Don't include child nodes.
+
+```
+var lis = D8.find('li', menu);
+var icon = D8.make('i');
+lis.map(D8.append(D8.cloner(icon)));
+```
+
+
+### D8.remove(elem)
+
+Returns **Element**
 
 Remove an element from the DOM.
- 
+
+ * **elem** Element
+
+
 
 ## Traversal
 
-`condition` can be either a CSS selector, an HTML element or a test function.
+`condition` can be either a CSS selector, an Element or a test function.
 
-### `D8.matches(condition, elem)`
 
-Returns: **`Boolean`*
+### D8.matches(elem, condition) & D8.matchedBy(condition, elem)
 
-### `D8.contains(condition, parent)`
+Returns: **Boolean*
 
-Returns: **`Boolean`*
+ * **elem** Element
+ * **condition** String | Element | Function
 
-### `D8.containedBy(condition, child)`
+```
+D8.matches(function (el) { return el.tagName === 'BODY'), document.body);
+// => true
+```
 
-Returns **`Boolean`**
 
-### D8.find(condition, elem) & D8.findIn(elem, condition)
+### D8.find(condition[, parent]) & D8.findIn(parent, condition)
 
-Returns **`Array`**
+Returns **[ Element ]**
 
-### D8.findOne(condition, elem) & D8.findOneIn(elem, condition)
+ * **parent** (optional) Element - defaults to `document`
+ * **condition** String | Element | Function
 
-Returns **`Element`**
 
-### `D8.findByTag(tagName, elem)`
+### D8.findOne(condition[, parent]) & D8.findOneIn(parent, condition)
 
-Returns **`Array`**
+Returns **Element**
 
-### `D8.findByTagIn(tagName, elem)`
+ * **parent** (optional) Element - defaults to `document`
+ * **condition** String | Element | Function
 
-Returns **`Array`**
 
-### `D8.findByClass(className, elem)`
+### D8.findByTag(tagName[, parent]) & D8.findByTagIn(parent, tagName)
 
-Returns **`Array`**
+Returns **[ Element ]**
 
-### `D8.findByClassIn(className, elem)`
+ * **parent** (optional) Element - defaults to `document`
+ * **tagName** String
 
-Returns **`Array`**
 
-### `D8.next(elem)`
+### D8.findByClass(className[, parent]) & D8.findByClassIn(parent, className)
 
-Returns **`Element`**
+Returns **[ Element ]**
 
-### `D8.prev(elem)`
+ * **parent** (optional) Element - defaults to `document`
+ * **className** String
 
-Returns **`Element`**
 
-### `D8.childrenOf(elem[, condition])`
+### D8.contains(condition, parent)
 
-Returns **`Array`**
+Returns: **Boolean**
 
-Immediate children of `elem`, optionally matching `condition`.
+ * **parent** Element
+ * **condition** String | Element | Function
 
-### `D8.parentOf(elem)`
 
-Returns **`Element`**
+### D8.next(reference)
 
-### `D8.parentsOf(elem[, condition])`
+Returns **Element**
 
-All parents of `elem`, optionally matching `condition`.
+Next Element sibling.
 
-Returns **`Array`**
+ * **reference** Element
+
+
+### D8.prev(reference)
+
+Returns **Element**
+
+Previous Element sibling.
+
+ * **reference** Element
+
+
+### D8.childrenOf(parent[, condition])
+
+Returns **[ Element ]**
+
+Immediate children of `parent`, optionally matching `condition`.
+
+ * **parent** Element
+ * **condition** (optional) String | Element | Function
+
+
+### D8.parentsOf(elem[, condition])
+
+Returns **[ Element ]**
+
+All parents of `elem`, optionally filtered by `condition`.
+
+ * **elem** Element
+ * **condition** (optional) String | Element | Function
+
+
+### D8.parentOf(elem[, condition])
+
+Returns **Element**
+
+First parent of `elem`. If `condition` is given, returns the first
+parent matching `condition`, if any.
+
+ * **elem** Element
+ * **condition** (optional) String | Element | Function
+
+
+### D8.containedBy(condition, child)
+
+Returns: **Boolean**
+
+ * **child** Element
+ * **condition** String | Element | Function
+
+```
+var imageLinks = images.filter(D8.containedBy('a'));
+```
+
 
 ## Element creation
 
-### `D8.make(tag, props, children)`
+### D8.make(tag[, properties, content])
 
-Returns **`Element`**
+Returns **Element**
 
- * `tag` is a string with an optional ID and class names: `tagname#id.class1.class2`
- * `props` is an object with properties and attributes to set on the new element.
- * `children` is an array of DOM nodes or text strings to append to the new element.
+ * **tag** String - Tag name and optionally ID and class name: `tagName#id.class1.class2`
+ * **properties** (optional) Object - Properties and attributes to set on the new element.
+ * **content** (optional) Node | String | Function | [Node] | [String] | [Function] - Nodes, text strings (or functions returning these) to append to the new element.
 
-### `D8.maker(tag, props, children)`
+```
+D8.make('a.big', { tabIndex: -1, href: '#', 'style.color': 'red' }, "Link text");
+// => <a href="#" tabindex="-1" class="big" style="color:red">Link text</a>
+```
 
-Returns **Function** creating a new element every time it is called.
+### D8.maker(tag[, properties, children])
+
+Returns **Function**
+
+Creates a new element from the given arguments every time it is called.
+
 
 ## Style
 
-### `D8.getStyle(prop, elem)`
+### D8.getStyle(property, elem) & D8.getStyleFrom(elem, property)
 
-### `D8.setStyle(prop, val, elem)`
+Returns **String**
 
-### `D8.hide(elem)`
+ * **property** String - CSS Property
 
-### `D8.show(elem)`
+ * **elem** Element
+
+
+### D8.setStyle(property, value, elem) & D8.setStyleFrom(elem, value, property)
+
+Returns **Element** (elem)
+
+ * **property** String - CSS Property
+
+ * **value** String - For position and dimension properties, the `px` unit will be assumed.
+
+ * **elem** Element
+
+
+### D8.hide(elem)
+
+Returns **Element** (elem)
+
+Shorthand for `D8.setStyle('display', 'none')`
+
+
+### D8.show(elem)
+
+Returns **Element** (elem)
+
+Shorthand for `D8.setStyle('display', 'block')`

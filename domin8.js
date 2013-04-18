@@ -121,11 +121,18 @@ var equals = curry(function equals (a, b) {
   return a === b;
 });
 
-var toDashCase = function (str) {
+function camelToDashCase (str) {
   return str.replace(/([A-Z])/g, function (letter) {
     return '-' + letter.toLowerCase();
   });
-};
+}
+
+function dashToCamelCase (str) {
+  return str.replace(/\W+(.)/g, function (_, chr) {
+    return chr.toUpperCase();
+  });
+}
+
 
 // Return a Node from a Node, String, Function, or a list of those.
 var nodeify = function (obj) {
@@ -321,7 +328,7 @@ D8.setDataOn = curry(rotate(dataset), 3);
 function dataset (key, value, elem) {
   key = doc.documentElement.dataset
       ? 'dataset.' + key
-      : 'data-' + toDashCase(key);
+      : 'data-' + camelToDashCase(key);
   var ret = attributeOrProperty(key, value, elem);
   return typeof value === 'undefined' ? ret : elem;
 }
@@ -351,7 +358,7 @@ function style (name, value, elem) {
     return elem.ownerDocument.defaultView.getComputedStyle(elem)
         .getPropertyValue(name);
   }
-  property('style.' + name, value, elem);
+  property('style.' + dashToCamelCase(name), value, elem);
   return elem;
 }
 

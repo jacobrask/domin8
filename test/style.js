@@ -5,10 +5,10 @@ var D8 = D8 || require('../domin8.js');
 test("Get style", function (t) {
   var elem = document.createElement('div');
   document.body.appendChild(elem);
-  elem.style.fontFamily = 'serif';
+  elem.style.textAlign = 'right';
 
-  t.equal(D8.getStyle('font-family', elem), 'serif', "Get style");
-  t.equal(D8.getStyleFrom(elem)('font-family'), 'serif', "Get style");
+  t.equal(D8.getStyle('text-align', elem), 'right', "Get style");
+  t.equal(D8.getStyleFrom(elem)('text-align'), 'right', "Get style");
   
   document.body.removeChild(elem);
   t.end();
@@ -19,6 +19,7 @@ test("Set style", function (t) {
   var elem = document.createElement('div');
 
   t.equal(D8.setStyle('font-family', 'serif', elem), elem, "Set style returns element");
+  console.log(elem.style);
   t.equal(elem.style.fontFamily, 'serif', "Set style");
   t.equal(D8.setStyle('font-family', 'cursive')(elem), elem, "Set style (curried) returns element");
   t.equal(elem.style.fontFamily, 'cursive', "Set style (curried)");

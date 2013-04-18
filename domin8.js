@@ -434,6 +434,7 @@ var matchesSelector = (function () {
   }
 })();
 function matches (cond, elem) {
+  if (cond == null) return false;
   if (isFunction(cond)) return cond(elem);
   if (isString(cond)) {
     return elem[matchesSelector] && elem[matchesSelector](cond);
@@ -491,7 +492,7 @@ function parentsOf (elem, cond, max) {
   }
   var results = [];
   while ((elem = elem.parentNode) && !(max && results.length >= max)) {
-    if (matches(cond, elem)) results[results.length] = elem;
+    if (cond == null || matches(cond, elem)) results[results.length] = elem;
   }
   return results;
 }

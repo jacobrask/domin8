@@ -4,21 +4,36 @@
   <meta charset="utf-8">
   <title>Domin8 tests</title>
   <link rel="stylesheet" href="./vendor/qunit.css">
-  <script src="../domin8.js"></script>
 </head>
 <body>
   <div id="qunit"></div>
-  <div id="qunit-fixture">
-    <input>
-    <div id="test-elem">
-      <p>Text <b>html</b></p>
-      <p>
-    </div>
-  </div>
+  <script src="../domin8.js"></script>
   <script src="./vendor/qunit.js"></script>
-  <script src="props.js"></script>
-  <script src="content.js"></script>
-  <script src="traversal.js"></script>
+  <script>
+    // Compatibility wrapper around TAP
+    var require = function () {};
+    var qtest = window.test;
+    test = function (name, fn) {
+      qtest(name, function () {
+        fn({
+          ok: ok,
+          equal: equal,
+          notEqual: notEqual,
+          end: function () {}
+        });
+      });
+    };
+  </script>
+  <script src="smart_get_set.js"></script>
+  <script src="attributes.js"></script>
+  <script src="properties.js"></script>
+  <script src="classname.js"></script>
+  <script src="style.js"></script>
+  <script src="content_inside.js"></script>
+  <script src="content_outside.js"></script>
+  <script src="content_modify.js"></script>
+  <script src="find_in.js"></script>
+  <script src="find_relative.js"></script>
   <script src="create.js"></script>
 </body>
 </html>

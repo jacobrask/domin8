@@ -1,0 +1,31 @@
+{
+  "name": "domin8",
+  "version": "0.0.3",
+  "description": "DOM manipulation",
+  "main": "domin8.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "tape": "~0.3.3"
+  },
+  "testling": {
+    "files": "test/*.js",
+    "browsers": {
+      "firefox": [ 15 ],
+      "chrome": [ 23 ],
+      "opera": [ 12 ]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jacobrask/domin8.git"
+  },
+  "keywords": [
+    "dom",
+    "browser"
+  ],
+  "author": "Jacob Rask",
+  "license": "MIT",
+  "readmeFilename": "README.md"
+}

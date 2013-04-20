@@ -25,6 +25,8 @@ deactivate(elem);
 
 ```
 
+The goal is for Domin8 to support the 2 latest versions of major browsers.
+
 [![browser support](https://ci.testling.com/jacobrask/domin8.png)](https://ci.testling.com/jacobrask/domin8)
 
 
@@ -165,7 +167,7 @@ Wraps the HTML5 data API, and fallbacks to data attributes for unsupporting brow
 
 Returns **Element** (target)
 
- * **className** String
+ * **className** String - Allows multiple classes, space-separated
  * **target** Element 
 
 
@@ -173,7 +175,7 @@ Returns **Element** (target)
 
 Returns **Element** (target)
 
- * **className** String
+ * **className** String - Allows multiple classes, space-separated
  * **target** Element 
 
 
@@ -183,7 +185,7 @@ Returns **Element** (target)
 
 #### Parameters
 
- * **className** String
+ * **className** String - Allows multiple classes, space-separated
  * **target** Element 
 
 

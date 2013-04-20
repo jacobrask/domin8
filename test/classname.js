@@ -21,6 +21,20 @@ test("Add class", function (t) {
 });
 
 
+test("Multiple classes", function (t) {
+  var elem = document.createElement('div');
+
+  t.equal(D8.addClass('foo bar', elem).className, 'foo bar');
+
+  t.equal(D8.removeClass('foo bar', elem).className, '');
+
+  elem.className = 'foo';
+  t.equal(D8.toggleClass('foo bar', elem).className, 'bar');
+
+  t.end();
+});
+
+
 test("Remove class", function (t) {
   var elem = document.createElement('div');
   elem.className = 'foo bar fizz buzz';

@@ -124,8 +124,11 @@ test("Set nested property", function (t) {
 test("Get with property shorthands", function (t) {
   var div = document.createElement('div');
   div.innerHTML = '<p>\n<b>foo</b>';
-  div.dataset || (div.dataset = {});
-  div.dataset.fooBar = 'foo';
+  if (div.dataset) {
+    div.dataset.fooBar = 'foo';
+  } else {
+    div.setAttribute('data-foo-bar', 'foo');
+  }
   var input = document.createElement('input');
   input.value = 'foo';
 
@@ -133,7 +136,7 @@ test("Get with property shorthands", function (t) {
   t.equal(D8.getText(div), div.textContent, "Get text");
 
   t.equal(D8.getValue(input), input.value, "Get value");
-  t.equal(D8.getData('fooBar', div), div.dataset.fooBar, "Get data");
+  t.equal(D8.getData('fooBar', div), 'foo', "Get data");
 
   t.end();
 });

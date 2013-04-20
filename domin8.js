@@ -301,7 +301,8 @@ D8.hasClass = curry(hasClass);
 D8.hasClassOn = curry(flip(hasClass), 2);
 
 function className (action, name, elem) {
-  elem.classList[action](name);
+  name = name.split(' ');
+  name.forEach(function (c) { elem.classList[action](c); });
   return elem;
 }
 function hasClass (cond, elem) {

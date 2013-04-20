@@ -27,6 +27,8 @@ D8.VERSION = '0.0.3';
 // Internal helpers
 // ================
 
+var docElem = doc.documentElement;
+
 // Often used prototype methods
 // ----------------------------
 
@@ -135,19 +137,18 @@ function dashToCamelCase (str) {
 
 
 // Return a Node from a Node, String, Function, or a list of those.
-var nodeify = function (obj) {
+function nodeify (obj) {
   if (isFunction(obj)) obj = obj();
   if (isString(obj)) obj = doc.createTextNode(obj);
   if (isColl(obj)) {
     obj = slice.call(obj).reduce(function (frag, el) {
       frag.appendChild(nodeify(el));
       return frag;
-    }, document.createDocumentFragment());
+    }, doc.createDocumentFragment());
   }
   if (!isNode(obj)) obj = doc.createTextNode(obj + "");
   return obj;
 };
-
 
 
 // Properties and attributes
@@ -155,7 +156,7 @@ var nodeify = function (obj) {
 
 // Properties that should be set directly and not as attributes.
 // Also used as map for case insensitive property names and for aliases.
-var propertyFix = "acceptCharset accessKey attributes autocomplete autofocus autoplay buffered cellPadding cellSpacing cells challenge checked childElementCount childNodes children classList className clientHeight clientLeft clientTop clientWidth colSpan cols compact complete content contentDocument contentEditable contentWindow control controls coords crossOrigin currentSrc currentTime data dataset dateTime declare default defaultChecked defaultMuted defaultPlaybackRate defaultSelected defaultValue dirName disabled download draggable duration elements encoding enctype ended error event files firstChild firstElementChild form formAction formEnctype formMethod formNoValidate formTarget frame frameBorder hash headers hidden high host hostname htmlFor httpEquiv incremental indeterminate index initialTime innerHTML innerText isContentEditable isMap keytype kind label labels lastChild lastElementChild length link list localName loop low max media mediaGroup multiple muted naturalHeight naturalWidth networkState nextElementSibling nextSibling noValidate nodeName nodeType nodeValue nonce offsetHeight offsetLeft offsetParent offsetTop offsetWidth open optimum options origin outerHTML outerText ownerDocument parentElement parentNode pathname paused ping playbackRate played port position poster prefix preload previousElementSibling previousSibling profile protocol readOnly readyState required reversed rowIndex rowSpan rows rules sandbox scheme scope scrollHeight scrollLeft scrollTop scrollWidth scrolling seamless search sectionRowIndex seekable seeking selected selectedIndex selectedOptions selectionDirection selectionEnd selectionStart shape sheet size sizes span standby start startTime step style summary tabIndex tagName textContent textTracks track translate type useMap validationMessage validity value valueAsDate valueAsNumber valueType version videoHeight videoWidth volume willValidate wrap"
+var propertyFix = "acceptCharset accessKey attributes autocomplete autofocus autoplay buffered cellPadding cellSpacing cells challenge checked childElementCount childNodes children classList className clientHeight clientLeft clientTop clientWidth colSpan cols compact complete content contentDocument contentEditable contentWindow control controls crossOrigin currentSrc currentTime data dataset dateTime declare default defaultChecked defaultMuted defaultPlaybackRate defaultSelected defaultValue dirName disabled download draggable duration elements encoding enctype ended error event files firstChild firstElementChild form formAction formEnctype formMethod formNoValidate formTarget frame frameBorder hash hidden high host hostname htmlFor httpEquiv incremental indeterminate index initialTime innerHTML innerText isContentEditable kind label labels lastChild lastElementChild length link list localName loop low max media mediaGroup multiple muted naturalHeight naturalWidth networkState nextElementSibling nextSibling noValidate nodeName nodeType nodeValue offsetHeight offsetLeft offsetParent offsetTop offsetWidth open optimum options origin outerHTML outerText ownerDocument parentElement parentNode pathname paused ping playbackRate played port position poster prefix preload previousElementSibling previousSibling profile protocol readOnly readyState required reversed rowIndex rowSpan rows rules sandbox scheme scope scrollHeight scrollLeft scrollTop scrollWidth scrolling seamless search sectionRowIndex seekable seeking selected selectedIndex selectedOptions selectionDirection selectionEnd selectionStart size sizes span standby start startTime step style summary tabIndex tagName textContent textTracks track translate type validationMessage validity value valueAsDate valueAsNumber valueType version videoHeight videoWidth volume willValidate wrap"
   .split(' ').reduce(function (props, key) {
     props[key.toLowerCase()] = key;
     return props;
@@ -191,18 +192,19 @@ function getAny (name, elem) {
 }
 
 function setAny (name, value, elem) {
+  var args = arguments;
   if (isObject(name)) {
     elem = value;
     if (elem == null) {
-      return curry(setAny).apply(this, arguments);
+      return curry(setAny).apply(this, args);
    } else {
       for (var key in name) {
         attributeOrProperty(key, name[key], elem);
       }
     }
   } else {
-    if (arguments.length < setAny.length) {
-      return curry(setAny).apply(this, arguments);
+    if (args.length < setAny.length) {
+      return curry(setAny).apply(this, args);
     } else {
       attributeOrProperty(name, value, elem);
     }
@@ -326,7 +328,7 @@ D8.setData = curry(dataset);
 D8.setDataOn = curry(rotate(dataset), 3);
 
 function dataset (key, value, elem) {
-  key = doc.documentElement.dataset
+  key = docElem.dataset
       ? 'dataset.' + key
       : 'data-' + camelToDashCase(key);
   var ret = attributeOrProperty(key, value, elem);
@@ -450,23 +452,18 @@ D8.containedBy = curry(function (cond, child) {
   return !!parentsOf(child, cond, 1);
 });
 
-var matchesSelector = (function () {
-  var props = [ 'matches', 'webkitMatchesSelector', 'mozMatchesSelector',
-                'msMatchesSelector', 'oMatchesSelector' ];
-  for (var i = 0; i < props.length; i++) {
-    if (HTMLElement.prototype[props[i]]) return props[i];
-  }
-})();
+var matchesSelector = docElem.webkitMatchesSelector
+                   || docElem.mozMatchesSelector
+                   || docElem.oMatchesSelector
+                   || docElem.msMatchesSelector;
 function matches (cond, elem) {
   if (cond == null) return false;
   if (isFunction(cond)) return cond(elem);
-  if (isString(cond)) {
-    return elem[matchesSelector] && elem[matchesSelector](cond);
-  }
+  if (isString(cond)) return matchesSelector.call(elem, cond);
   return equals(cond, elem);
 }
 function find (cond, elem) {
-  elem || (elem = document);
+  elem || (elem = doc);
   if (cond == null || cond === '') {
     return slice.call(elem.getElementsByTagName('*'));
   }
@@ -477,7 +474,7 @@ function find (cond, elem) {
   return slice.call(elem.getElementsByTagName('*')).filter(cond);
 }
 function findOne (cond, elem) {
-  elem || (elem = document);
+  elem || (elem = doc);
   if (isString(cond)) return elem.querySelector(cond);
   if (!isFunction(cond)) cond = equals(cond);
   var match = null;
@@ -490,11 +487,11 @@ function findOne (cond, elem) {
   return match;
 }
 function findByTag (tag, elem) {
-  elem || (elem = document);
+  elem || (elem = doc);
   return slice.call(elem.getElementsByTagName(tag));
 }
 function findByClass (name, elem) {
-  elem || (elem = document);
+  elem || (elem = doc);
   return slice.call(elem.getElementsByClassName(name));
 }
 function contains (cond, parent) {
@@ -508,9 +505,7 @@ function childrenOf (elem, cond) {
 function parentsOf (elem, cond, max) {
   if (isString(cond)) {
     var sel = cond;
-    cond = function (elem) {
-      return elem[matchesSelector] && elem[matchesSelector](sel);
-    };
+    cond = function (elem) { return matchesSelector.call(elem, sel); };
   } else if (cond != null && !isFunction(cond)) {
     cond = equals(elem);
   }

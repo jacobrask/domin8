@@ -3,7 +3,6 @@
 // (c) 2013 Jacob Rask
 // domin8 may be freely distributed under the MIT license
 
-
 // Setup
 // -----
 
@@ -85,7 +84,7 @@ function curry (fn, arity /*, origArgs */) {
 }
 
 // Return a new function with fixed arguments, ignoring its own arguments
-// Replaces `curry` for functions like `make` where all but 1 arguments are optional
+// Replaces `curry` for functions like `make` where all but 1 arguments are optional
 function saturate (fn) {
   return function saturator (/* args */) {
     var args = arguments;
@@ -148,7 +147,7 @@ function nodeify (obj) {
   }
   if (!isNode(obj)) obj = doc.createTextNode(obj + "");
   return obj;
-};
+}
 
 
 // Properties and attributes

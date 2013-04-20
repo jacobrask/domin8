@@ -8,9 +8,9 @@ and partial application.
 Domin8's functions are more suitable for this, and also work very well
 together with iteration functions such as `forEach`, `map` and `reduce`.
 
-All functions are curried (or "automatically partially applied" if you wish),
-which means that if they are called without all required arguments, they
-return a new function accepting the remaining arguments.
+All functions are curried which means that if they are called without
+all required arguments, they return a new function accepting the remaining
+arguments, and so on until all arguments are filled.
 
 This lets you do things like:
 
@@ -25,8 +25,7 @@ deactivate(elem);
 
 ```
 
-Domin8 is currently not tested in many browsers, but the goal is compatibility
-with the two latest versions of major browsers.
+[![browser support](https://ci.testling.com/jacobrask/domin8.png)](https://ci.testling.com/jacobrask/domin8)
 
 
 # API
@@ -49,8 +48,8 @@ Returns **Node** (target)
 
 Sets a property or an attribute. Treats `name` as an attribute unless `target` is a non-Element Node, or `name` is in a list of known Element direct properties.
 
- * **name** String - The property or attribute to access. Can be nested with a dot: `style.background`.
- * **value** Anything
+ * **name** String | Object - The key to set `value` on, or an object/hash with multiple keys and values. Keys can be nested with a dot: `style.background`.
+ * **value** Anything - Only used if `name` is a string and not an object.
  * **target** Node
 
 
@@ -120,7 +119,7 @@ Returns **String**
 
 ### D8.setText(text, target) & D8.setTextOn(target, text)
 
-Returns **Element**
+Returns **Element** (target)
 
  * **text** String
  * **target** Node
@@ -135,7 +134,7 @@ Returns **String**
 
 ### D8.setValue(value, target) & D8.setValueOn(target, value)
 
-Returns **Element**
+Returns **Element** (target)
 
  * **value** String
  * **target** Element
@@ -415,7 +414,9 @@ var imageLinks = images.filter(D8.containedBy('a'));
 
 Returns **Element**
 
- * **tag** String - Tag name and optionally ID and class name: `tagName#id.class1.class2`
+Basically a wrapper around `document.createElement`, `D8.set` and `D8.append`.
+
+ * **tag** String - Tag with optional ID and class names: `tagName#id.class1.class2`
  * **properties** (optional) Object - Properties and attributes to set on the new element.
  * **content** (optional) Node | String | Function | [Node] | [String] | [Function] - Nodes, text strings (or functions returning these) to append to the new element.
 

@@ -124,7 +124,7 @@ test("Set nested property", function (t) {
 test("Get with property shorthands", function (t) {
   var div = document.createElement('div');
   div.innerHTML = '<p>\n<b>foo</b>';
-  div.dataset || (div.dataset = {});
+  div.dataset || (div.dataset = {});
   div.dataset.fooBar = 'foo';
   var input = document.createElement('input');
   input.value = 'foo';

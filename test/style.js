@@ -19,7 +19,6 @@ test("Set style", function (t) {
   var elem = document.createElement('div');
 
   t.equal(D8.setStyle('font-family', 'serif', elem), elem, "Set style returns element");
-  console.log(elem.style);
   t.equal(elem.style.fontFamily, 'serif', "Set style");
   t.equal(D8.setStyle('font-family', 'cursive')(elem), elem, "Set style (curried) returns element");
   t.equal(elem.style.fontFamily, 'cursive', "Set style (curried)");

@@ -124,11 +124,6 @@ test("Set nested property", function (t) {
 test("Get with property shorthands", function (t) {
   var div = document.createElement('div');
   div.innerHTML = '<p>\n<b>foo</b>';
-  if (div.dataset) {
-    div.dataset.fooBar = 'foo';
-  } else {
-    div.setAttribute('data-foo-bar', 'foo');
-  }
   var input = document.createElement('input');
   input.value = 'foo';
 
@@ -136,7 +131,6 @@ test("Get with property shorthands", function (t) {
   t.equal(D8.getText(div), div.textContent, "Get text");
 
   t.equal(D8.getValue(input), input.value, "Get value");
-  t.equal(D8.getData('fooBar', div), 'foo', "Get data");
 
   t.end();
 });
@@ -161,24 +155,6 @@ test("Set with property shorthands", function (t) {
   t.equal(D8.setValueOn(input, 'foo'), input, "Set value on returns element");
   t.equal(input.value, 'foo', "Set value on");
 
-  t.equal(D8.setData('fooBar', 'fizz', div), div, "Set data returns element");
-  if (div.dataset) {
-    t.equal(div.dataset.fooBar, 'fizz', "Set data");
-  } else {
-    t.equal(div.getAttribute('data-foo-bar'), 'fizz', "Set data");
-  }
-  t.equal(D8.setDataOn(div, 'fooBar', 'buzz'), div, "Set data on returns element");
-  if (div.dataset) {
-    t.equal(div.dataset.fooBar, 'buzz', "Set data on");
-  } else {
-    t.equal(div.getAttribute('data-foo-bar'), 'buzz', "Set data on");
-  }
-  t.equal(D8.setData('fooBar')('boo')(div), div, "Set data (curried) returns element");
-  if (div.dataset) {
-    t.equal(div.dataset.fooBar, 'boo', "Set data (curried)");
-  } else {
-    t.equal(div.getAttribute('data-foo-bar'), 'boo', "Set data (curried)");
-  }
   t.end();
 });
 

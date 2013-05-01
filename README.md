@@ -158,8 +158,8 @@ Returns **Element** (target)
 
 Wraps the HTML5 data API, and fallbacks to data attributes for unsupporting browsers.
 
- * **key** String - camelCased dataset key.
- * **value** String
+ * **key** String | Object - The key to set `value` on, or an object/hash with multiple keys and values.
+ * **value** String - Only used if `name` is a string and not an object.
  * **target** Element
 
 

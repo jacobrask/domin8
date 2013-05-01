@@ -321,17 +321,35 @@ function hasClass (cond, elem) {
 // Data
 // ----
 
-D8.getData = curry(dataset)(___, undefined);
-D8.getDataFrom = curry(flip(dataset), 3)(___, undefined);
+D8.getData = curry(dataset, 2)(___, undefined);
+D8.getDataFrom = curry(flip(dataset), 2)(___, undefined);
 
-D8.setData = curry(dataset);
-D8.setDataOn = curry(rotate(dataset), 3);
+D8.setData = curry(dataset, 2);
+D8.setDataOn = curry(rotate(dataset), 2);
 
 function dataset (key, value, elem) {
-  key = docElem.dataset
-      ? 'dataset.' + key
-      : 'data-' + camelToDashCase(key);
-  var ret = attributeOrProperty(key, value, elem);
+  var args = arguments, ret;
+  if (isObject(key)) {
+    elem = value;
+    if (elem == null) return curry(dataset).apply(this, args);
+    for (var k in key) {
+      if (docElem.dataset) {
+        property('dataset.' + k, key[k], elem);
+      } else {
+        attribute('data-' + camelToDashCase(k), key[k], elem);
+      }
+    }
+    return elem;
+  }
+  if (args.length < dataset.length) {
+    return curry(dataset).apply(this, args);
+  } else {
+    if (docElem.dataset) {
+      ret = property('dataset.' + key, value, elem);
+    } else {
+      ret = attribute('data-' + camelToDashCase(k), value, elem);
+    }
+  }
   return typeof value === 'undefined' ? ret : elem;
 }
 

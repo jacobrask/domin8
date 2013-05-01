@@ -12,9 +12,10 @@
   "testling": {
     "files": "test/*.js",
     "browsers": {
-      "chrome": [ 24, 25, "canary" ],
-      "firefox": [ 18, 19, "nightly" ],
-      "ie": [ 10 ],
+      "android-browser": [ "4.2" ],
+      "chrome": [ 24, 25 ],
+      "firefox": [ 18, 19 ],
+      "ie": [ 9, 10 ],
       "iphone": [ 6 ],
       "opera": [ 12 ]
     }

@@ -38,34 +38,34 @@ var toString = Object.prototype.toString;
 // Type checking functions
 // -----------------------
 
-var isColl = function (obj) {
+function isColl (obj) {
   return (/(Array|HTMLCollection|NodeList)/).test(toString.call(obj));
-};
-var isElement = function (obj) {
+}
+function isElement (obj) {
   return obj && obj.nodeType === 1;
-};
-var isFunction = function (obj) {
+}
+function isFunction (obj) {
   return typeof obj == 'function';
-};
-var isNode = function (obj) {
+}
+function isNode (obj) {
   return obj && !isNaN(obj.nodeType);
-};
-var isObject = function (obj) {
+}
+function isObject (obj) {
   return toString.call(obj) === '[object Object]';
-};
-var isRegExp = function (obj) {
+}
+function isRegExp (obj) {
   return toString.call(obj) == '[object RegExp]';
-};
-var isString = function (obj) {
+}
+function isString (obj) {
   return typeof obj == 'string';
-};
+}
 
 
 // Higher order functions
 // ----------------------
 
 // Returns new functions until all required arguments (`fn.length` or `arity`)
-// are filled. `___` can be used as a placeholder argument. 
+// are filled. `___` can be used as a placeholder argument.
 var ___ = D8.___ = {};
 function curry (fn, arity /*, origArgs */) {
   var origArgs = slice.call(arguments, 2);
@@ -155,7 +155,7 @@ function nodeify (obj) {
 
 // Properties that should be set directly and not as attributes.
 // Also used as map for case insensitive property names and for aliases.
-var propertyFix = "acceptCharset accessKey attributes autocomplete autofocus autoplay buffered cellPadding cellSpacing cells challenge checked childElementCount childNodes children classList className clientHeight clientLeft clientTop clientWidth colSpan cols compact complete content contentDocument contentEditable contentWindow control controls crossOrigin currentSrc currentTime data dataset dateTime declare default defaultChecked defaultMuted defaultPlaybackRate defaultSelected defaultValue dirName disabled download draggable duration elements encoding enctype ended error event files firstChild firstElementChild form formAction formEnctype formMethod formNoValidate formTarget frame frameBorder hash hidden high host hostname htmlFor httpEquiv incremental indeterminate index initialTime innerHTML innerText isContentEditable kind label labels lastChild lastElementChild length link list localName loop low max media mediaGroup multiple muted naturalHeight naturalWidth networkState nextElementSibling nextSibling noValidate nodeName nodeType nodeValue offsetHeight offsetLeft offsetParent offsetTop offsetWidth open optimum options origin outerHTML outerText ownerDocument parentElement parentNode pathname paused ping playbackRate played port position poster prefix preload previousElementSibling previousSibling profile protocol readOnly readyState required reversed rowIndex rowSpan rows rules sandbox scheme scope scrollHeight scrollLeft scrollTop scrollWidth scrolling seamless search sectionRowIndex seekable seeking selected selectedIndex selectedOptions selectionDirection selectionEnd selectionStart size sizes span standby start startTime step style summary tabIndex tagName textContent textTracks track translate type validationMessage validity value valueAsDate valueAsNumber valueType version videoHeight videoWidth volume willValidate wrap"
+var propertyFix = "acceptCharset accessKey attributes autocomplete autofocus autoplay buffered checked childElementCount childNodes children classList className clientHeight clientLeft clientTop clientWidth colSpan cols compact complete content contentDocument contentEditable contentWindow control controls crossOrigin currentSrc currentTime data dataset dateTime declare default defaultChecked defaultMuted defaultPlaybackRate defaultSelected defaultValue dirName disabled download draggable duration elements encoding ended error event files firstChild firstElementChild form formAction formEnctype formMethod formNoValidate formTarget frameBorder hash hidden high host hostname htmlFor httpEquiv incremental indeterminate index initialTime innerHTML innerText isContentEditable kind label labels lastChild lastElementChild length link list localName loop low max media mediaGroup multiple muted naturalHeight naturalWidth networkState nextElementSibling nextSibling noValidate nodeName nodeType nodeValue offsetHeight offsetLeft offsetParent offsetTop offsetWidth open optimum options origin outerHTML outerText ownerDocument parentElement parentNode pathname paused ping playbackRate played port position prefix preload previousElementSibling previousSibling profile protocol readOnly readyState required reversed rowIndex rowSpan rows rules sandbox scheme scope scrollHeight scrollLeft scrollTop scrollWidth scrolling seamless search sectionRowIndex seekable seeking selected selectedIndex selectedOptions selectionDirection selectionEnd selectionStart size sizes span standby start startTime step style summary tabIndex tagName textContent textTracks track translate type validationMessage validity value valueAsDate valueAsNumber valueType version videoHeight videoWidth volume willValidate wrap"
   .split(' ').reduce(function (props, key) {
     props[key.toLowerCase()] = key;
     return props;
@@ -516,7 +516,7 @@ function parentsOf (elem, cond, max) {
   return results;
 }
 
- 
+
 
 // Element creation
 // ================

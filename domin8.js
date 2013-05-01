@@ -470,10 +470,28 @@ D8.containedBy = curry(function (cond, child) {
   return !!parentsOf(child, cond, 1);
 });
 
-var matchesSelector = docElem.webkitMatchesSelector
+var matchesSelector = docElem.matches
+                   || docElem.webkitMatchesSelector
                    || docElem.mozMatchesSelector
                    || docElem.oMatchesSelector
-                   || docElem.msMatchesSelector;
+                   || docElem.msMatchesSelector
+                   || function (sel) {
+  if (sel == null) return false;
+  if (sel === "*") return true;
+  var elem = this;
+  var parent = elem.parentNode;
+  if (parent == null) {
+    elem = elem.cloneNode(true);
+    parent = document.createElement('div');
+    parent.appendChild(elem);
+  }
+  var cands = parent.querySelectorAll(sel);
+  for (var i = 0, l = cands.length; i < l; i++) {
+    if (cands[i] === elem) return true;
+  }
+  return false;
+};
+
 function matches (cond, elem) {
   if (cond == null) return false;
   if (isFunction(cond)) return cond(elem);

@@ -477,12 +477,11 @@ var matchesSelector = docElem.matches
                    || docElem.msMatchesSelector
                    || function (sel) {
   if (sel == null) return false;
-  if (sel === "*") return true;
   var elem = this;
   var parent = elem.parentNode;
   if (parent == null) {
     elem = elem.cloneNode(true);
-    parent = document.createElement('div');
+    parent = document.createDocumentFragment('div');
     parent.appendChild(elem);
   }
   var cands = parent.querySelectorAll(sel);

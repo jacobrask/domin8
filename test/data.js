@@ -1,3 +1,7 @@
+var test = test || require('tape');
+var D8 = D8 || require('../domin8.js');
+
+
 test("Set data", function (t) {
   var div = document.createElement('div');
 
